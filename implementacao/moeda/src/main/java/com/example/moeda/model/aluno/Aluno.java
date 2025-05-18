@@ -1,6 +1,7 @@
 package com.example.moeda.model.aluno;
 
 import com.example.moeda.model.pessoa.Pessoa;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.example.moeda.model.curso.Curso;
 import jakarta.persistence.*;
 
@@ -13,8 +14,9 @@ public class Aluno extends Pessoa {
     @Column(nullable = false, unique = true)
     private String rg;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST) 
     @JoinColumn(name = "curso_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Curso curso;
 
     // Getters e Setters

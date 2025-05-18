@@ -1,5 +1,6 @@
 package com.example.moeda.controller;
 
+import com.example.moeda.dto.EmpresaCreateDTO;
 import com.example.moeda.model.empresa.Empresa;
 import com.example.moeda.repository.EmpresaRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,13 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.dao.DataIntegrityViolationException;
 
 @RestController
 @RequestMapping("/api/empresas")
@@ -23,50 +24,37 @@ import java.util.Optional;
 public class EmpresaController {
     private final EmpresaRepository empresaRepository;
 
-    @Autowired
     public EmpresaController(EmpresaRepository empresaRepository) {
         this.empresaRepository = empresaRepository;
     }
 
-    @Operation(summary = "Listar todas as empresas", description = "Retorna uma lista de todas as empresas parceiras cadastradas")
-    @ApiResponse(responseCode = "200", description = "Lista de empresas retornada com sucesso",
-            content = @Content(mediaType = "application/json", 
-            schema = @Schema(implementation = Empresa.class)))
-    @GetMapping
-    public ResponseEntity<List<Empresa>> findAll() {
-        List<Empresa> empresas = empresaRepository.findAll();
-        return ResponseEntity.ok(empresas);
-    }
-
-    @Operation(summary = "Buscar empresa por ID", description = "Retorna uma empresa específica baseada no ID")
+    @Operation(summary = "Cadastrar nova empresa")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Empresa encontrada",
-                content = @Content(schema = @Schema(implementation = Empresa.class))),
-        @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<Empresa> findById(
-            @Parameter(description = "ID da empresa a ser buscada", required = true)
-            @PathVariable Long id) {
-        Optional<Empresa> empresa = empresaRepository.findById(id);
-        return empresa.map(ResponseEntity::ok)
-                     .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @Operation(summary = "Cadastrar nova empresa", description = "Registra uma nova empresa parceira no sistema")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Empresa criada com sucesso",
-                content = @Content(schema = @Schema(implementation = Empresa.class))),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+        @ApiResponse(responseCode = "201", description = "Empresa criada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
     @PostMapping
-    public ResponseEntity<Empresa> create(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                description = "Objeto Empresa a ser criado", required = true,
-                content = @Content(schema = @Schema(implementation = Empresa.class)))
-            @RequestBody Empresa empresa) {
-        Empresa savedEmpresa = empresaRepository.save(empresa);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEmpresa);
+    public ResponseEntity<?> create(@RequestBody EmpresaCreateDTO empresaDTO) {
+        try {
+            Empresa empresa = new Empresa();
+            empresa.setNome(empresaDTO.getNome());
+            empresa.setEmail(empresaDTO.getEmail());
+            empresa.setSenha(empresaDTO.getSenha());
+            empresa.setCnpj(empresaDTO.getCnpj());
+
+            Empresa savedEmpresa = empresaRepository.save(empresa);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedEmpresa);
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erro ao criar empresa: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Listar todas as empresas")
+    @GetMapping
+    public ResponseEntity<List<Empresa>> getAllEmpresas() {
+        return ResponseEntity.ok(empresaRepository.findAll());
     }
 
     @Operation(summary = "Atualizar empresa", description = "Atualiza os dados de uma empresa existente")

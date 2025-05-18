@@ -1,7 +1,12 @@
 package com.example.moeda.controller;
 
+import com.example.moeda.dto.AlunoCreateDTO;
 import com.example.moeda.model.aluno.Aluno;
+import com.example.moeda.model.curso.Curso;
+import com.example.moeda.model.instituicao.Instituicao;
 import com.example.moeda.repository.AlunoRepository;
+import com.example.moeda.repository.CursoRepository;
+import com.example.moeda.repository.InstituicaoRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,10 +14,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,68 +27,84 @@ import java.util.Optional;
 @Tag(name = "Alunos", description = "Operações relacionadas a alunos")
 public class AlunoController {
     private final AlunoRepository alunoRepository;
+    private final CursoRepository cursoRepository;
+    private final InstituicaoRepository instituicaoRepository;
 
-    @Autowired
-    public AlunoController(AlunoRepository alunoRepository) {
+    public AlunoController(AlunoRepository alunoRepository, 
+                         CursoRepository cursoRepository,
+                         InstituicaoRepository instituicaoRepository) {
         this.alunoRepository = alunoRepository;
+        this.cursoRepository = cursoRepository;
+        this.instituicaoRepository = instituicaoRepository;
     }
 
-    @Operation(summary = "Listar todos os alunos", description = "Retorna uma lista de todos os alunos cadastrados")
-    @ApiResponse(responseCode = "200", description = "Lista de alunos retornada com sucesso",
-            content = @Content(mediaType = "application/json", 
-            schema = @Schema(implementation = Aluno.class)))
-    @GetMapping
-    public ResponseEntity<List<Aluno>> findAll() {
-        List<Aluno> alunos = alunoRepository.findAll();
-        return ResponseEntity.ok(alunos);
-    }
-
-    @Operation(summary = "Buscar aluno por ID", description = "Retorna um aluno específico baseado no ID")
+    @Operation(summary = "Criar novo aluno")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Aluno encontrado",
-                content = @Content(schema = @Schema(implementation = Aluno.class))),
-        @ApiResponse(responseCode = "404", description = "Aluno não encontrado")
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<Aluno> findById(
-            @Parameter(description = "ID do aluno a ser buscado", required = true)
-            @PathVariable Long id) {
-        Optional<Aluno> aluno = alunoRepository.findById(id);
-        return aluno.map(ResponseEntity::ok)
-                   .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @Operation(summary = "Criar novo aluno", description = "Cadastra um novo aluno no sistema")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Aluno criado com sucesso",
-                content = @Content(schema = @Schema(implementation = Aluno.class))),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+        @ApiResponse(responseCode = "201", description = "Aluno criado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+        @ApiResponse(responseCode = "404", description = "Curso ou Instituição não encontrada")
     })
     @PostMapping
-    public ResponseEntity<Aluno> create(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                description = "Objeto Aluno a ser criado", required = true,
-                content = @Content(schema = @Schema(implementation = Aluno.class)))
-            @RequestBody Aluno aluno) {
-        Aluno savedAluno = alunoRepository.save(aluno);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedAluno);
+    public ResponseEntity<?> create(@RequestBody AlunoCreateDTO alunoDTO) {
+        try {
+            // Find or validate related entities
+            Optional<Curso> curso = cursoRepository.findById(alunoDTO.getCursoId());
+            Optional<Instituicao> instituicao = instituicaoRepository.findById(alunoDTO.getInstituicaoId());
+            
+            if (curso.isEmpty() || instituicao.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Curso ou Instituição não encontrada");
+            }
+
+            // Create new Aluno
+            Aluno aluno = new Aluno();
+            aluno.setNome(alunoDTO.getNome());
+            aluno.setEmail(alunoDTO.getEmail());
+            aluno.setSenha(alunoDTO.getSenha());
+            aluno.setCpf(alunoDTO.getCpf());
+            aluno.setSaldo(alunoDTO.getSaldo());
+            aluno.setEndereco(alunoDTO.getEndereco());
+            aluno.setRg(alunoDTO.getRg());
+            aluno.setCurso(curso.get());
+            aluno.setInstituicao(instituicao.get());
+
+            Aluno savedAluno = alunoRepository.save(aluno);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedAluno);
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erro ao criar aluno: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Listar todas as instituições")
+    @GetMapping("/instituicoes")
+    public ResponseEntity<List<Instituicao>> getAllInstituicoes() {
+        return ResponseEntity.ok(instituicaoRepository.findAll());
+    }
+
+    @Operation(summary = "Listar todos os cursos")
+    @GetMapping("/cursos")
+    public ResponseEntity<List<Curso>> getAllCursos() {
+        return ResponseEntity.ok(cursoRepository.findAll());
+    }
+
+    @Operation(summary = "Listar todos os alunos")
+    @GetMapping("/aluno")
+    public ResponseEntity<List<Aluno>> getAllAlunos() {
+        return ResponseEntity.ok(alunoRepository.findAll());
     }
 
     @Operation(summary = "Atualizar aluno", description = "Atualiza os dados de um aluno existente")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Aluno atualizado com sucesso",
-                content = @Content(schema = @Schema(implementation = Aluno.class))),
-        @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+            @ApiResponse(responseCode = "200", description = "Aluno atualizado com sucesso", content = @Content(schema = @Schema(implementation = Aluno.class))),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     })
     @PutMapping("/{id}")
     public ResponseEntity<Aluno> update(
-            @Parameter(description = "ID do aluno a ser atualizado", required = true)
-            @PathVariable Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                description = "Objeto Aluno com dados atualizados", required = true,
-                content = @Content(schema = @Schema(implementation = Aluno.class)))
-            @RequestBody Aluno aluno) {
+            @Parameter(description = "ID do aluno a ser atualizado", required = true) @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto Aluno com dados atualizados", required = true, content = @Content(schema = @Schema(implementation = Aluno.class))) @RequestBody Aluno aluno) {
         if (!alunoRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -94,13 +115,12 @@ public class AlunoController {
 
     @Operation(summary = "Excluir aluno", description = "Remove um aluno do sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Aluno excluído com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Aluno não encontrado")
+            @ApiResponse(responseCode = "204", description = "Aluno excluído com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @Parameter(description = "ID do aluno a ser excluído", required = true)
-            @PathVariable Long id) {
+            @Parameter(description = "ID do aluno a ser excluído", required = true) @PathVariable Long id) {
         if (!alunoRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

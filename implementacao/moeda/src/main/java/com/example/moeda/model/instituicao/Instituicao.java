@@ -5,6 +5,15 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "instituicoes")
 public class Instituicao {
+    
+    public Instituicao() {}
+
+    public Instituicao(String nome, String cnpj, String endereco) {
+        this.nome = nome;
+        this.cnpj = cnpj;
+        this.endereco = endereco;
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
