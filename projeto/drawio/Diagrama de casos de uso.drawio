@@ -8,7 +8,7 @@
           <mxGeometry x="-426.5" y="4.5" width="1133" height="200" as="geometry" />
         </mxCell>
         <mxCell id="_jAADGRznZQ2d4b5v9Fu-1" value="Pessoa" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
-          <mxGeometry x="-280" y="-87" width="30" height="60" as="geometry" />
+          <mxGeometry x="-329" y="-232" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="_jAADGRznZQ2d4b5v9Fu-4" value="Fazer cadastro" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="61" y="576" width="120" height="80" as="geometry" />
@@ -52,13 +52,16 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="_jAADGRznZQ2d4b5v9Fu-14" value="Aluno" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
-          <mxGeometry x="-68" y="-47" width="30" height="60" as="geometry" />
+          <mxGeometry x="-105" y="-17" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-vmiz_rj6W9Z9cPhy4cW-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startFill=0;" edge="1" parent="1" source="_jAADGRznZQ2d4b5v9Fu-16" target="-vmiz_rj6W9Z9cPhy4cW-3">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="_jAADGRznZQ2d4b5v9Fu-16" value="Distribuir moedas" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="64" y="-191" width="120" height="80" as="geometry" />
+          <mxGeometry x="61" y="-124" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="55Vrt-mXsHKYFI6cj5mB-1" value="Usuario" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
-          <mxGeometry x="-422" y="-14" width="30" height="60" as="geometry" />
+          <mxGeometry x="-508" y="-50" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="55Vrt-mXsHKYFI6cj5mB-4" value="" style="endArrow=block;html=1;rounded=0;endFill=0;" parent="1" source="_jAADGRznZQ2d4b5v9Fu-1" target="55Vrt-mXsHKYFI6cj5mB-1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -82,7 +85,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="_jAADGRznZQ2d4b5v9Fu-11" value="Professor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
-          <mxGeometry x="-68" y="-141" width="30" height="60" as="geometry" />
+          <mxGeometry x="-105" y="-149" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="55Vrt-mXsHKYFI6cj5mB-8" value="Receber cupom de troca" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="59" y="229" width="120" height="80" as="geometry" />
@@ -92,6 +95,9 @@
             <mxPoint x="6" y="-94" as="sourcePoint" />
             <mxPoint x="56" y="-144" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="-vmiz_rj6W9Z9cPhy4cW-6" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startFill=0;" edge="1" parent="1" source="55Vrt-mXsHKYFI6cj5mB-11" target="-vmiz_rj6W9Z9cPhy4cW-5">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="55Vrt-mXsHKYFI6cj5mB-11" value="Resgatar vantagem" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="61" y="59" width="120" height="80" as="geometry" />
@@ -151,7 +157,13 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="hIesImxTOCb98lZZt1HC-1" value="Receber deposito de moedas" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="64" y="-109" width="120" height="80" as="geometry" />
+          <mxGeometry x="59" y="-218" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-vmiz_rj6W9Z9cPhy4cW-3" value="Aluno" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="388" y="-146" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-vmiz_rj6W9Z9cPhy4cW-5" value="Empresa" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="380" y="132" width="30" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
