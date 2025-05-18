@@ -1,43 +1,32 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0" version="26.2.14">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0" version="27.0.6">
   <diagram name="Página-1" id="0baeC1T9_Wn-1TEpzrgX">
-    <mxGraphModel dx="2245" dy="1921" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2245" dy="1925" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="iyyX1s9_e3pjV-plWLvc-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=170;exitDy=225;exitPerimeter=0;strokeWidth=4;" parent="1" source="iA4XpVnBiFOq4aOnz0Fv-35" edge="1">
+        <mxCell id="iyyX1s9_e3pjV-plWLvc-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=170;exitDy=225;exitPerimeter=0;strokeWidth=4;endArrow=none;startFill=0;entryX=0.031;entryY=0.511;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="iA4XpVnBiFOq4aOnz0Fv-35" edge="1" target="iA4XpVnBiFOq4aOnz0Fv-34">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-435" y="-900" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="iyyX1s9_e3pjV-plWLvc-2" value="&amp;lt;&amp;lt;HTTP&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=left;verticalAlign=middle;resizable=0;points=[];fontSize=15;labelPosition=right;verticalLabelPosition=middle;" parent="iyyX1s9_e3pjV-plWLvc-1" vertex="1" connectable="0">
           <mxGeometry x="-0.1333" relative="1" as="geometry">
-            <mxPoint x="10" as="offset" />
+            <mxPoint x="5" y="37" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="iA4XpVnBiFOq4aOnz0Fv-35" value="Computador:Browser" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-650" y="-1150" width="440" height="170" as="geometry" />
+          <mxGeometry x="-650" y="-1150" width="440" height="220" as="geometry" />
         </mxCell>
-        <mxCell id="iA4XpVnBiFOq4aOnz0Fv-34" value="API REST" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-650" y="-899" width="440" height="129" as="geometry" />
+        <mxCell id="iA4XpVnBiFOq4aOnz0Fv-34" value="API REST: Spring" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="-650" y="-844" width="440" height="129" as="geometry" />
         </mxCell>
-        <mxCell id="gO444OpA8gxw1t6iv7qg-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=4;" parent="1" target="iA4XpVnBiFOq4aOnz0Fv-33" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-435" y="-540" as="targetPoint" />
-            <mxPoint x="-430" y="-780" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="gO444OpA8gxw1t6iv7qg-2" value="&amp;lt;&amp;lt;Spring Data JPA&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=15;" parent="gO444OpA8gxw1t6iv7qg-1" vertex="1" connectable="0">
-          <mxGeometry x="-0.1777" y="3" relative="1" as="geometry">
-            <mxPoint x="87" y="7" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="iA4XpVnBiFOq4aOnz0Fv-33" value="Banco de Dados" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-650" y="-693" width="440" height="109" as="geometry" />
+        <mxCell id="iA4XpVnBiFOq4aOnz0Fv-33" value="Banco de Dados: H2 Database Engine" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="-650" y="-638.5" width="440" height="109" as="geometry" />
         </mxCell>
         <mxCell id="vSEXQuvb4U8GNyra1pAj-4" value="Serviço de Email" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="-60" y="-1150" width="440" height="129" as="geometry" />
         </mxCell>
-        <mxCell id="vSEXQuvb4U8GNyra1pAj-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.62;exitY=0.998;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0;entryDx=80;entryDy=0;entryPerimeter=0;strokeWidth=4;endArrow=none;startFill=1;startArrow=classic;" parent="1" source="vSEXQuvb4U8GNyra1pAj-4" target="iA4XpVnBiFOq4aOnz0Fv-35" edge="1">
+        <mxCell id="vSEXQuvb4U8GNyra1pAj-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.62;exitY=0.998;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0;entryDx=80;entryDy=0;entryPerimeter=0;strokeWidth=4;endArrow=none;startFill=0;startArrow=none;" parent="1" source="vSEXQuvb4U8GNyra1pAj-4" target="iA4XpVnBiFOq4aOnz0Fv-35" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="155" y="-713" as="targetPoint" />
           </mxGeometry>
@@ -46,6 +35,39 @@
           <mxGeometry x="-0.1282" y="-3" relative="1" as="geometry">
             <mxPoint x="-15" y="23" as="offset" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=129;exitDy=225;exitPerimeter=0;entryX=-0.005;entryY=0.511;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=4;endArrow=none;startFill=0;" edge="1" parent="1" source="iA4XpVnBiFOq4aOnz0Fv-34" target="iA4XpVnBiFOq4aOnz0Fv-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-4" value="&amp;lt;&amp;lt;Spring Data JPA&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=0;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="-430" y="-687" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-6" value="Consulta de Saldo" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-620" y="-1090" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-12" value="Dados da Aplicação" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-490" y="-595" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-13" value="Perfis" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-640" y="-795" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-15" value="Transações" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-490" y="-795" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-17" value="Vantagens" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-340" y="-795" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-20" value="Reinvindicação de Vantagem" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-370" y="-1090" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-21" value="Email de Cupom" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-40" y="-1100" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-25" value="Concessão de Moedas" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-495" y="-1090" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_fTcTco6b9hYsjiyXlx0-26" value="Autenticação de Usuário" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-490" y="-1010" width="100" height="50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
