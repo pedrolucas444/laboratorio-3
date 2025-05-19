@@ -4,11 +4,6 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="C2ZW92uEtdmMykY9HH0U-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=halfCircle;endFill=0;" edge="1" parent="1" source="Lk-7Cm1_FcsgzJypIx5Y-21">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="452" y="120" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="Lk-7Cm1_FcsgzJypIx5Y-21" value="Frontend Web" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="402" y="50" width="100" height="50" as="geometry" />
         </mxCell>
@@ -27,15 +22,13 @@
             <mxPoint x="630" y="200" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C2ZW92uEtdmMykY9HH0U-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=oval;endFill=0;" edge="1" parent="1" source="Lk-7Cm1_FcsgzJypIx5Y-22">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="452" y="120" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="C2ZW92uEtdmMykY9HH0U-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=halfCircle;endFill=0;" edge="1" parent="1" source="Lk-7Cm1_FcsgzJypIx5Y-22">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="452" y="210" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="j0PLnEGFXg1SKrm8CIFU-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" edge="1" parent="1" source="Lk-7Cm1_FcsgzJypIx5Y-22" target="Lk-7Cm1_FcsgzJypIx5Y-21">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Lk-7Cm1_FcsgzJypIx5Y-22" value="API REST" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="402" y="140" width="100" height="50" as="geometry" />
