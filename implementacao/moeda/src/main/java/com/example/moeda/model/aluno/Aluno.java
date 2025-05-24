@@ -1,7 +1,11 @@
 package com.example.moeda.model.aluno;
 
 import com.example.moeda.model.pessoa.Pessoa;
+import com.example.moeda.model.vantagem.Vantagem;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
 import com.example.moeda.model.curso.Curso;
 import jakarta.persistence.*;
 
@@ -10,14 +14,18 @@ import jakarta.persistence.*;
 public class Aluno extends Pessoa {
     @Column(nullable = false)
     private String endereco;
-    
+
     @Column(nullable = false, unique = true)
     private String rg;
-    
-    @ManyToOne(cascade = CascadeType.PERSIST) 
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "curso_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Curso curso;
+
+    @ManyToMany
+    @JoinTable(name = "aluno_vantagem", joinColumns = @JoinColumn(name = "aluno_id"), inverseJoinColumns = @JoinColumn(name = "vantagem_id"))
+    private List<Vantagem> vantagens;
 
     // Getters e Setters
     public String getEndereco() {
@@ -42,5 +50,13 @@ public class Aluno extends Pessoa {
 
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+
+    public List<Vantagem> getVantagens() {
+        return vantagens;
+    }
+
+    public void setVantagens(List<Vantagem> vantagens) {
+        this.vantagens = vantagens;
     }
 }

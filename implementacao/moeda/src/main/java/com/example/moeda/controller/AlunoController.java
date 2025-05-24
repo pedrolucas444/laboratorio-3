@@ -1,6 +1,7 @@
 package com.example.moeda.controller;
 
 import com.example.moeda.dto.AlunoCreateDTO;
+import com.example.moeda.dto.CursoDTO;
 import com.example.moeda.model.aluno.Aluno;
 import com.example.moeda.model.curso.Curso;
 import com.example.moeda.model.instituicao.Instituicao;
@@ -21,6 +22,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/alunos")
@@ -30,9 +32,9 @@ public class AlunoController {
     private final CursoRepository cursoRepository;
     private final InstituicaoRepository instituicaoRepository;
 
-    public AlunoController(AlunoRepository alunoRepository, 
-                         CursoRepository cursoRepository,
-                         InstituicaoRepository instituicaoRepository) {
+    public AlunoController(AlunoRepository alunoRepository,
+            CursoRepository cursoRepository,
+            InstituicaoRepository instituicaoRepository) {
         this.alunoRepository = alunoRepository;
         this.cursoRepository = cursoRepository;
         this.instituicaoRepository = instituicaoRepository;
@@ -40,9 +42,9 @@ public class AlunoController {
 
     @Operation(summary = "Criar novo aluno")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Aluno criado com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-        @ApiResponse(responseCode = "404", description = "Curso ou Instituição não encontrada")
+            @ApiResponse(responseCode = "201", description = "Aluno criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "404", description = "Curso ou Instituição não encontrada")
     })
     @PostMapping
     public ResponseEntity<?> create(@RequestBody AlunoCreateDTO alunoDTO) {
@@ -50,10 +52,10 @@ public class AlunoController {
             // Find or validate related entities
             Optional<Curso> curso = cursoRepository.findById(alunoDTO.getCursoId());
             Optional<Instituicao> instituicao = instituicaoRepository.findById(alunoDTO.getInstituicaoId());
-            
+
             if (curso.isEmpty() || instituicao.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Curso ou Instituição não encontrada");
+                        .body("Curso ou Instituição não encontrada");
             }
 
             // Create new Aluno
@@ -85,8 +87,17 @@ public class AlunoController {
 
     @Operation(summary = "Listar todos os cursos")
     @GetMapping("/cursos")
-    public ResponseEntity<List<Curso>> getAllCursos() {
-        return ResponseEntity.ok(cursoRepository.findAll());
+    public ResponseEntity<List<CursoDTO>> getAllCursos() {
+        List<Curso> cursos = cursoRepository.findAll();
+        List<CursoDTO> dtos = cursos.stream()
+                .map(curso -> new CursoDTO(
+                        curso.getId(),
+                        curso.getNome(),
+                        curso.getCodigo(),
+                        curso.getDepartamento().getNome(),
+                        curso.getDepartamento().getId()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @Operation(summary = "Listar todos os alunos")
