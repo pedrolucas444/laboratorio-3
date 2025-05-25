@@ -5,7 +5,7 @@ public class ProfessorCreateDTO {
     private String email;
     private String senha;
     private String cpf;
-    private String matricula;
+    //private String matricula;
     private Long instituicaoId;  
     private Long departamentoId;
 
@@ -18,8 +18,8 @@ public class ProfessorCreateDTO {
     public void setSenha(String senha) { this.senha = senha; }
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
-    public String getMatricula() { return matricula; }
-    public void setMatricula(String matricula) { this.matricula = matricula; }
+   // public String getMatricula() { return matricula; }
+   // public void setMatricula(String matricula) { this.matricula = matricula; }
     public Long getInstituicaoId() { return instituicaoId; }
     public void setInstituicaoId(Long instituicaoId) { this.instituicaoId = instituicaoId; }
     public Long getDepartamentoId() { return departamentoId; }

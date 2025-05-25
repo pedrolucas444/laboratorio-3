@@ -5,6 +5,7 @@ import com.example.moeda.model.departamento.Departamento;
 import com.example.moeda.repository.DepartamentoRepository;
 import com.example.moeda.repository.CursoRepository;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,23 +14,28 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/cursos")
 public class CursoController {
-    private final CursoRepository cursoRepository = null;
-    private final DepartamentoRepository departamentoRepository = null;
+    private final CursoRepository cursoRepository;
+    private final DepartamentoRepository departamentoRepository;
+
+    public CursoController(CursoRepository cursoRepository, DepartamentoRepository departamentoRepository) {
+        this.cursoRepository = cursoRepository;
+        this.departamentoRepository = departamentoRepository;
+    }
 
     @GetMapping("/instituicao/{instituicaoId}")
-    public List<CursoDTO> getCursosByInstituicao(@PathVariable Long instituicaoId) {
+    public ResponseEntity<List<CursoDTO>> getCursosByInstituicao(@PathVariable Long instituicaoId) {
         List<Departamento> departamentos = departamentoRepository.findByInstituicaoId(instituicaoId);
-        
-        return departamentos.stream()
-            .flatMap(dept -> dept.getCursos().stream()
+
+        List<CursoDTO> cursosDTO = departamentos.stream()
+                .flatMap(dept -> dept.getCursos().stream())
                 .map(curso -> new CursoDTO(
-                    curso.getId(),
-                    curso.getNome(),
-                    curso.getCodigo(),
-                    dept.getNome(),
-                    dept.getId()
-                ))
-            )
-            .collect(Collectors.toList());
+                        curso.getId(),
+                        curso.getNome(),
+                        curso.getCodigo(),
+                        curso.getDepartamento().getNome(),
+                        curso.getDepartamento().getId()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(cursosDTO);
     }
 }

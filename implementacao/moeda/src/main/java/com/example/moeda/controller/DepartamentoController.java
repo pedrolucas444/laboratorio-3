@@ -13,16 +13,20 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/departamentos")
 public class DepartamentoController {
-    private final DepartamentoRepository departamentoRepository = null;
+    private final DepartamentoRepository departamentoRepository;
+
+    public DepartamentoController(DepartamentoRepository departamentoRepository) {
+        this.departamentoRepository = departamentoRepository;
+    }
 
     @GetMapping("/instituicao/{instituicaoId}")
     public ResponseEntity<List<DepartamentoResponseDTO>> getByInstituicao(@PathVariable Long instituicaoId) {
         List<Departamento> departamentos = departamentoRepository.findByInstituicaoId(instituicaoId);
-        
+
         List<DepartamentoResponseDTO> response = departamentos.stream()
-            .map(DepartamentoResponseDTO::new)
-            .collect(Collectors.toList());
-            
+                .map(DepartamentoResponseDTO::new)
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(response);
     }
 }

@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DepartamentoRepository extends JpaRepository<Departamento, Long> {
-    @EntityGraph(attributePaths = {"cursos"})
+    @EntityGraph(attributePaths = {"cursos"}) 
     List<Departamento> findByInstituicaoId(Long instituicaoId);
 }

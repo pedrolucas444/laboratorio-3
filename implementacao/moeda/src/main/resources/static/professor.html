@@ -5,36 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Área do Professor</title>
     <link href="/css/styles.css" rel="stylesheet" />
-    <style>
-      .funcionalidades {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        margin-top: 30px;
-      }
-      .funcionalidade {
-        border: 1px solid #ddd;
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-        cursor: pointer;
-        transition: transform 0.3s, box-shadow 0.3s;
-      }
-      .funcionalidade:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-      .funcionalidade i {
-        font-size: 2.5rem;
-        margin-bottom: 15px;
-        color: #3498db;
-      }
-      .funcionalidade h3 {
-        margin: 0;
-        color: #2c3e50;
-      }
-    </style>
   </head>
+  
   <body>
     <div class="container">
       <header>
@@ -44,35 +16,6 @@
           <button onclick="logout()">Sair</button>
         </div>
       </header>
-
-      <div class="funcionalidades">
-        <div
-          class="funcionalidade"
-          onclick="alert('Funcionalidade em desenvolvimento')"
-        >
-          <i>📊</i>
-          <h3>Registrar Méritos</h3>
-          <p>Atribuir moedas virtuais aos alunos</p>
-        </div>
-
-        <div
-          class="funcionalidade"
-          onclick="alert('Funcionalidade em desenvolvimento')"
-        >
-          <i>👥</i>
-          <h3>Gerenciar Turmas</h3>
-          <p>Visualizar e gerenciar suas turmas</p>
-        </div>
-
-        <div
-          class="funcionalidade"
-          onclick="alert('Funcionalidade em desenvolvimento')"
-        >
-          <i>📝</i>
-          <h3>Relatórios</h3>
-          <p>Gerar relatórios de desempenho</p>
-        </div>
-      </div>
     </div>
 
     <script>

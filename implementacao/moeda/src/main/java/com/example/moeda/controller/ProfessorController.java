@@ -50,7 +50,7 @@ public class ProfessorController {
             professor.setEmail(professorDTO.getEmail());
             professor.setSenha(professorDTO.getSenha());
             professor.setCpf(professorDTO.getCpf());
-            professor.setMatricula(professorDTO.getMatricula());
+           // professor.setMatricula(professorDTO.getMatricula());
             professor.setInstituicao(instituicao);
             professor.setDepartamento(departamento);
             professor.setSaldo(0);
