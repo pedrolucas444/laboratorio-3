@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" version="27.0.9">
+  <diagram name="Página-1" id="0wEkpnlP8ei3k7m3NNp1">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="2000" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-1" value="Aluno" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;align=center;size=65;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="35" height="472" as="geometry" />
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-2" value=":VantagemView" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="332" y="20" width="150" height="472" as="geometry" />
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-3" value=":VantagemController" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="601" y="20" width="163" height="472" as="geometry" />
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-4" value=":VantagemModel" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="814" y="20" width="150" height="472" as="geometry" />
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-5" value="acessarTelaVantagens()" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="uGzcCHqNv9X8bWUibsAS-1" target="uGzcCHqNv9X8bWUibsAS-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="127" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-6" value="solicitarVantagens()" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="uGzcCHqNv9X8bWUibsAS-2" target="uGzcCHqNv9X8bWUibsAS-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="553" y="179" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-7" value="listarTodas()" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="uGzcCHqNv9X8bWUibsAS-3" target="uGzcCHqNv9X8bWUibsAS-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="794" y="231" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-8" value="listaDeVantagens" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" edge="1" parent="1" source="uGzcCHqNv9X8bWUibsAS-4" target="uGzcCHqNv9X8bWUibsAS-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="797" y="283" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-9" value="enviarLista(listaDeVantagens)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="uGzcCHqNv9X8bWUibsAS-3" target="uGzcCHqNv9X8bWUibsAS-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="556" y="335" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uGzcCHqNv9X8bWUibsAS-10" value="exibirVantagens(listaDeVantagens)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="uGzcCHqNv9X8bWUibsAS-2" target="uGzcCHqNv9X8bWUibsAS-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="263" y="387" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
