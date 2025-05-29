@@ -138,4 +138,16 @@ public class AlunoController {
         alunoRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/verificar-cpf")
+    public ResponseEntity<Boolean> verificarCpfExistente(@RequestParam String cpf) {
+        boolean existe = alunoRepository.existsByCpf(cpf);
+        return ResponseEntity.ok(existe);
+    }
+
+    @GetMapping("/verificar-rg")
+    public ResponseEntity<Boolean> verificarRgExistente(@RequestParam String rg) {
+        boolean existe = alunoRepository.existsByRg(rg);
+        return ResponseEntity.ok(existe);
+    }
 }

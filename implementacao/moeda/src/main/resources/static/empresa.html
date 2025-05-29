@@ -59,6 +59,23 @@
       button:hover {
         background-color: #45a049;
       }
+      .campo-invalido {
+        border: 2px solid red !important;
+      }
+      .mensagem-erro {
+        color: red;
+        font-size: 0.8rem;
+        margin-top: 5px;
+      }
+      #vantagem-errors {
+        margin-bottom: 15px;
+      }
+      .success-message {
+        color: green;
+        font-size: 1rem;
+        margin: 10px 0;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -96,16 +113,13 @@
           window.location.href = "login.html";
           return;
         }
-
         await carregarVantagens();
       });
 
       async function carregarVantagens() {
         try {
           const usuario = JSON.parse(localStorage.getItem("usuario"));
-          const response = await fetch(
-            `http://localhost:8080/api/vantagens/empresa/${usuario.id}`
-          );
+          const response = await fetch(`/api/vantagens/empresa/${usuario.id}`);
           const vantagens = await response.json();
 
           const container = document.getElementById("minhasVantagens");
@@ -115,11 +129,11 @@
             const div = document.createElement("div");
             div.className = "vantagem";
             div.innerHTML = `
-                        <h3>${vantagem.titulo}</h3>
-                        <p>${vantagem.descricao}</p>
-                        <p>Valor: ${vantagem.valor} moedas</p>
-                        <button onclick="removerVantagem(${vantagem.id})">Remover</button>
-                    `;
+            <h3>${vantagem.titulo}</h3>
+            <p>${vantagem.descricao}</p>
+            <p>Valor: ${vantagem.valor} moedas</p>
+            <button onclick="removerVantagem(${vantagem.id})">Remover</button>
+          `;
             container.appendChild(div);
           });
         } catch (error) {
@@ -127,54 +141,22 @@
         }
       }
 
-      async function cadastrarVantagem() {
-        const usuario = JSON.parse(localStorage.getItem("usuario"));
-        const titulo = document.getElementById("titulo").value;
-        const valor = document.getElementById("valor").value;
-        const descricao = document.getElementById("descricao").value;
-
-        try {
-          const response = await fetch("http://localhost:8080/api/vantagens", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              titulo,
-              valor: parseInt(valor),
-              descricao,
-              empresaId: usuario.id,
-            }),
-          });
-
-          if (response.ok) {
-            alert("Vantagem cadastrada com sucesso!");
-            document.getElementById("formVantagem").reset();
-            await carregarVantagens();
-          } else {
-            alert("Erro ao cadastrar vantagem");
-          }
-        } catch (error) {
-          alert("Erro ao cadastrar vantagem");
-        }
-      }
-
       async function removerVantagem(vantagemId) {
         if (confirm("Deseja realmente remover esta vantagem?")) {
           try {
-            const response = await fetch(
-              `http://localhost:8080/api/vantagens/${vantagemId}`,
-              {
-                method: "DELETE",
-              }
-            );
+            const response = await fetch(`/api/vantagens/${vantagemId}`, {
+              method: "DELETE",
+            });
 
             if (response.ok) {
-              alert("Vantagem removida com sucesso!");
+              const successDiv = document.createElement("div");
+              successDiv.className = "success-message";
+              successDiv.textContent = "Vantagem removida com sucesso!";
+              document.getElementById("minhasVantagens").prepend(successDiv);
               await carregarVantagens();
-            } else {
-              alert("Erro ao remover vantagem");
             }
           } catch (error) {
-            alert("Erro ao remover vantagem");
+            console.error("Erro ao remover vantagem:", error);
           }
         }
       }
@@ -184,6 +166,99 @@
         localStorage.removeItem("tipo");
         window.location.href = "login.html";
       }
+
+      const errorContainer = document.createElement("div");
+      errorContainer.id = "vantagem-errors";
+      errorContainer.className = "mensagem-erro";
+      document.getElementById("formVantagem").prepend(errorContainer);
+
+      async function cadastrarVantagem() {
+        const titulo = document.getElementById("titulo");
+        const valor = document.getElementById("valor");
+        const descricao = document.getElementById("descricao");
+
+        // Resetar estados
+        titulo.classList.remove("campo-invalido");
+        valor.classList.remove("campo-invalido");
+        descricao.classList.remove("campo-invalido");
+        errorContainer.innerHTML = "";
+
+        let isValid = true;
+        const errors = [];
+
+        // Validação de campos obrigatórios
+        if (!titulo.value.trim()) {
+          titulo.classList.add("campo-invalido");
+          errors.push("Título é obrigatório");
+          isValid = false;
+        }
+
+        if (!valor.value) {
+          valor.classList.add("campo-invalido");
+          errors.push("Valor é obrigatório");
+          isValid = false;
+        } else if (isNaN(valor.value)) {
+          valor.classList.add("campo-invalido");
+          errors.push("Valor deve ser um número");
+          isValid = false;
+        } else if (parseInt(valor.value) <= 0) {
+          valor.classList.add("campo-invalido");
+          errors.push("Valor deve ser um número positivo");
+          isValid = false;
+        }
+
+        if (!descricao.value.trim()) {
+          descricao.classList.add("campo-invalido");
+          errors.push("Descrição é obrigatória");
+          isValid = false;
+        }
+
+        if (!isValid) {
+          errorContainer.innerHTML = errors.join("<br>");
+          return;
+        }
+
+        try {
+          const usuario = JSON.parse(localStorage.getItem("usuario"));
+          const response = await fetch("/api/vantagens", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              titulo: titulo.value,
+              valor: parseInt(valor.value),
+              descricao: descricao.value,
+              empresaId: usuario.id,
+            }),
+          });
+
+          if (response.ok) {
+            const successDiv = document.createElement("div");
+            successDiv.className = "success-message";
+            successDiv.textContent = "Vantagem cadastrada com sucesso!";
+            document.getElementById("minhasVantagens").prepend(successDiv);
+
+            document.getElementById("formVantagem").reset();
+            await carregarVantagens();
+          } else {
+            const errorData = await response.json();
+            errorContainer.textContent = `Erro: ${
+              errorData.message || "Falha ao cadastrar vantagem"
+            }`;
+          }
+        } catch (error) {
+          errorContainer.textContent = "Erro de conexão com o servidor";
+        }
+      }
+
+      // Validação em tempo real
+      document.getElementById("valor").addEventListener("input", function () {
+        const valor = this.value;
+        if (isNaN(valor) || parseInt(valor) <= 0) {
+          this.classList.add("campo-invalido");
+        } else {
+          this.classList.remove("campo-invalido");
+        }
+      });
     </script>
   </body>
 </html>

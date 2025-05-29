@@ -30,8 +30,8 @@ public class EmpresaController {
 
     @Operation(summary = "Cadastrar nova empresa")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Empresa criada com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            @ApiResponse(responseCode = "201", description = "Empresa criada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
     @PostMapping
     public ResponseEntity<?> create(@RequestBody EmpresaCreateDTO empresaDTO) {
@@ -59,19 +59,14 @@ public class EmpresaController {
 
     @Operation(summary = "Atualizar empresa", description = "Atualiza os dados de uma empresa existente")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Empresa atualizada com sucesso",
-                content = @Content(schema = @Schema(implementation = Empresa.class))),
-        @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+            @ApiResponse(responseCode = "200", description = "Empresa atualizada com sucesso", content = @Content(schema = @Schema(implementation = Empresa.class))),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     })
     @PutMapping("/{id}")
     public ResponseEntity<Empresa> update(
-            @Parameter(description = "ID da empresa a ser atualizada", required = true)
-            @PathVariable Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                description = "Objeto Empresa com dados atualizados", required = true,
-                content = @Content(schema = @Schema(implementation = Empresa.class)))
-            @RequestBody Empresa empresa) {
+            @Parameter(description = "ID da empresa a ser atualizada", required = true) @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto Empresa com dados atualizados", required = true, content = @Content(schema = @Schema(implementation = Empresa.class))) @RequestBody Empresa empresa) {
         if (!empresaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -82,17 +77,22 @@ public class EmpresaController {
 
     @Operation(summary = "Remover empresa", description = "Exclui uma empresa parceira do sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Empresa excluída com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
+            @ApiResponse(responseCode = "204", description = "Empresa excluída com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @Parameter(description = "ID da empresa a ser excluída", required = true)
-            @PathVariable Long id) {
+            @Parameter(description = "ID da empresa a ser excluída", required = true) @PathVariable Long id) {
         if (!empresaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         empresaRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/verificar-cnpj")
+    public ResponseEntity<Boolean> verificarCnpjExistente(@RequestParam String cnpj) {
+        boolean existe = empresaRepository.existsByCnpj(cnpj);
+        return ResponseEntity.ok(existe);
     }
 }

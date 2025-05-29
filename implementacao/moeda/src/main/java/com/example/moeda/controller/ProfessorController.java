@@ -50,7 +50,7 @@ public class ProfessorController {
             professor.setEmail(professorDTO.getEmail());
             professor.setSenha(professorDTO.getSenha());
             professor.setCpf(professorDTO.getCpf());
-           // professor.setMatricula(professorDTO.getMatricula());
+            // professor.setMatricula(professorDTO.getMatricula());
             professor.setInstituicao(instituicao);
             professor.setDepartamento(departamento);
             professor.setSaldo(0);
@@ -70,5 +70,11 @@ public class ProfessorController {
     @GetMapping("/departamentos/instituicao/{instituicaoId}")
     public ResponseEntity<List<Departamento>> getDepartamentosByInstituicao(@PathVariable Long instituicaoId) {
         return ResponseEntity.ok(departamentoRepository.findByInstituicaoId(instituicaoId));
+    }
+
+    @GetMapping("/verificar-cpf")
+    public ResponseEntity<Boolean> verificarCpfExistente(@RequestParam String cpf) {
+        boolean existe = professorRepository.existsByCpf(cpf);
+        return ResponseEntity.ok(existe);
     }
 }
