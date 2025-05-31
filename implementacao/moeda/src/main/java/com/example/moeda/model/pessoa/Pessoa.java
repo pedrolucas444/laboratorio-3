@@ -14,9 +14,9 @@ public class Pessoa extends Usuario {
     @Column(nullable = false)
     private int saldo;
     
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "instituicao_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "pessoas"})
     private Instituicao instituicao;
 
     // Getters e Setters

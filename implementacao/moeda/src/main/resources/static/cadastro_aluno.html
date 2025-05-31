@@ -86,11 +86,34 @@
         await carregarInstituicoes();
       });
 
+      function limparErroCampo(campo) {
+        campo.classList.remove("campo-invalido");
+        const errorSpan = campo.parentElement.querySelector(".error-message");
+        if (errorSpan) {
+          errorSpan.remove();
+        }
+      }
+
+      document.getElementById("cpf").addEventListener("input", function () {
+        limparErroCampo(this);
+      });
+
+      document.getElementById("rg").addEventListener("input", function () {
+        limparErroCampo(this);
+      });
+
+      document.getElementById("email").addEventListener("input", function () {
+        limparErroCampo(this);
+      });
+
       async function carregarInstituicoes() {
         try {
-          const response = await fetch("/api/alunos/instituicoes");
+          const response = await fetch("/api/instituicoes");
+          if (!response.ok) throw new Error("Erro ao carregar instituições");
+
           const instituicoes = await response.json();
           const select = document.getElementById("instituicao");
+          select.innerHTML = '<option value="">Selecione...</option>';
 
           instituicoes.forEach((instituicao) => {
             const option = document.createElement("option");
@@ -100,6 +123,8 @@
           });
         } catch (error) {
           console.error("Erro ao carregar instituições:", error);
+          document.getElementById("error").textContent =
+            "Erro ao carregar instituições. Tente recarregar a página.";
         }
       }
 
@@ -175,32 +200,40 @@
       document
         .getElementById("cpf")
         .addEventListener("blur", async function () {
-          const cpf = this.value;
-          if (cpf) {
+          const cpf = this.value.replace(/\D/g, "");
+          if (cpf && cpf.length === 11) {
+            // Só verifica se tem 11 dígitos
             const response = await fetch(
-              `/api/auth/verificar-cpf?cpf=${encodeURIComponent(cpf)}`
+              `/api/alunos/verificar-cpf?cpf=${encodeURIComponent(cpf)}`
             );
-            const existe = await response.json();
-            if (existe) {
-              mostrarErro(this, "CPF já cadastrado");
+            if (response.ok) {
+              const existe = await response.json();
+              if (existe) {
+                mostrarErro(this, "CPF já cadastrado");
+              } else {
+                clearErrorForField(this);
+              }
             }
           }
         });
 
-      document
-        .getElementById("rg")
-        .addEventListener("blur", async function () {
-          const rg = this.value;
-          if (rg) {
-            const response = await fetch(
-              `/api/auth/verificar-rg?rg=${encodeURIComponent(rg)}`
-            );
+      document.getElementById("rg").addEventListener("blur", async function () {
+        const rg = this.value.replace(/\D/g, "");
+        if (rg && rg.length >= 8 && rg.length <= 10) {
+          // Só verifica se tem entre 8 e 10 dígitos
+          const response = await fetch(
+            `/api/alunos/verificar-rg?rg=${encodeURIComponent(rg)}`
+          );
+          if (response.ok) {
             const existe = await response.json();
             if (existe) {
               mostrarErro(this, "RG já cadastrado");
+            } else {
+              clearErrorForField(this);
             }
           }
-        });
+        }
+      });
 
       // Funções de validação
       function mostrarErro(campo, mensagem) {
@@ -245,30 +278,39 @@
             alunoDTO.email
           )}`
         );
-        const emailExiste = await emailResponse.json();
-        if (emailExiste) {
-          mostrarErro(document.getElementById("email"), "Email já cadastrado");
-          erros.push("email");
+        if (emailResponse.ok) {
+          const emailExiste = await emailResponse.json();
+          if (emailExiste) {
+            mostrarErro(
+              document.getElementById("email"),
+              "Email já cadastrado"
+            );
+            erros.push("email");
+          }
         }
 
         // Verificar CPF
         const cpfResponse = await fetch(
           `/api/alunos/verificar-cpf?cpf=${encodeURIComponent(alunoDTO.cpf)}`
         );
-        const cpfExiste = await cpfResponse.json();
-        if (cpfExiste) {
-          mostrarErro(document.getElementById("cpf"), "CPF já cadastrado");
-          erros.push("cpf");
+        if (cpfResponse.ok) {
+          const cpfExiste = await cpfResponse.json();
+          if (cpfExiste) {
+            mostrarErro(document.getElementById("cpf"), "CPF já cadastrado");
+            erros.push("cpf");
+          }
         }
 
         // Verificar RG
         const rgResponse = await fetch(
           `/api/alunos/verificar-rg?rg=${encodeURIComponent(alunoDTO.rg)}`
         );
-        const rgExiste = await rgResponse.json();
-        if (rgExiste) {
-          mostrarErro(document.getElementById("rg"), "RG já cadastrado");
-          erros.push("rg");
+        if (rgResponse.ok) {
+          const rgExiste = await rgResponse.json();
+          if (rgExiste) {
+            mostrarErro(document.getElementById("rg"), "RG já cadastrado");
+            erros.push("rg");
+          }
         }
 
         return erros;

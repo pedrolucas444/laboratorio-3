@@ -5,31 +5,499 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Área do Professor</title>
     <link href="/css/styles.css" rel="stylesheet" />
+
+    <style>
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 8px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      .error {
+        color: red;
+        font-size: 0.8rem;
+      }
+      .saldo {
+        font-weight: bold;
+        margin-right: 20px;
+      }
+      .actions {
+        margin-top: 20px;
+      }
+      .actions button {
+        margin-right: 10px;
+      }
+      header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .saldo-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .btn-sair {
+        background-color: #dc3545 !important;
+        margin-top: 15px;
+      }
+
+      .btn-sair:hover {
+        background-color: #bd2130 !important;
+      }
+      .mensagem {
+        padding: 10px;
+        margin: 15px 0;
+        border-radius: 4px;
+        display: none;
+      }
+
+      .mensagem.sucesso {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .mensagem.erro {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .btn-sair {
+        background-color: #dc3545 !important;
+        margin-top: 15px;
+      }
+
+      .btn-sair:hover {
+        background-color: #bd2130 !important;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+
+      .mensagem {
+        padding: 10px;
+        margin: 15px 0;
+        border-radius: 4px;
+        display: none;
+      }
+
+      .mensagem.sucesso {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .mensagem.erro {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
   </head>
-  
+
   <body>
     <div class="container">
       <header>
         <h1>Área do Professor</h1>
         <div>
           <span id="nomeProfessor"></span>
-          <button onclick="logout()">Sair</button>
+          <span class="saldo">
+            Saldo: <span id="saldoProfessor">0</span> moedas
+          </span>
         </div>
       </header>
+
+      <div class="actions">
+        <button id="btnDepositoSemestre" onclick="abrirModalDeposito()">
+          Solicitar Depósito do Semestre
+        </button>
+        <button onclick="abrirModalTransferencia()">
+          Transferir Moedas para Aluno
+        </button>
+        <button class="btn-sair" onclick="logout()">Sair</button>
+      </div>
+      <div id="mensagem" class="mensagem"></div>
     </div>
 
+    <!-- Modal de Depósito Semestral -->
+    <div id="modalDeposito" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharModalDeposito()">&times;</span>
+        <h2>Depósito Semestral</h2>
+        <p id="depositoMensagem">
+          Você pode solicitar um depósito de 1000 moedas uma vez por semestre.
+        </p>
+        <button
+          id="btnConfirmarDeposito"
+          onclick="solicitarDepositoSemestral()"
+        >
+          Confirmar Depósito
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal de Transferência -->
+    <div id="modalTransferencia" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharModalTransferencia()">&times;</span>
+        <h2>Transferir Moedas</h2>
+
+        <div class="form-group">
+          <label for="alunoDestino">Aluno:</label>
+          <select id="alunoDestino" required>
+            <option value="">Selecione um aluno</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="quantidadeMoedas">Quantidade:</label>
+          <input type="number" id="quantidadeMoedas" min="1" required />
+          <span id="erroQuantidade" class="error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="mensagemTransferencia"
+            >Mensagem: <span style="color: red">*</span></label
+          >
+          <textarea
+            id="mensagemTransferencia"
+            rows="3"
+            maxlength="500"
+            required
+          ></textarea>
+          <span id="contadorCaracteres" style="font-size: 0.8rem; color: #666"
+            >0/500 caracteres</span
+          >
+          <span id="erroMensagem" class="error"></span>
+        </div>
+
+        <button
+          id="btnConfirmarTransferencia"
+          onclick="confirmarTransferencia()"
+        >
+          Confirmar Transferência
+        </button>
+      </div>
+    </div>
+
+    <script src="/js/scripts.js"></script>
+
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const usuario = JSON.parse(localStorage.getItem("usuario"));
-        if (!usuario || localStorage.getItem("tipo") !== "professor") {
+      let professor;
+      let alunos = [];
+      let ultimoDeposito = null;
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        professor = JSON.parse(localStorage.getItem("usuario"));
+        if (!professor || localStorage.getItem("tipo") !== "professor") {
           window.location.href = "/login.html";
           return;
         }
 
         document.getElementById(
           "nomeProfessor"
-        ).textContent = `Bem-vindo, ${usuario.nome}`;
+        ).textContent = `Bem-vindo, ${professor.nome}`;
+        document.getElementById("saldoProfessor").textContent = professor.saldo;
+
+        // Verificar status do depósito semestral
+        await verificarStatusDeposito();
+
+        // Carregar alunos da mesma instituição
+        await carregarAlunos();
       });
+
+      document
+        .getElementById("mensagemTransferencia")
+        .addEventListener("input", function () {
+          const contador = document.getElementById("contadorCaracteres");
+          const caracteres = this.value.length;
+          contador.textContent = `${caracteres}/500 caracteres`;
+
+          if (caracteres > 500) {
+            this.value = this.value.substring(0, 500);
+            contador.textContent = "500/500 caracteres (limite atingido)";
+          }
+        });
+
+      function validarFormularioTransferencia() {
+        const mensagem = document.getElementById("mensagemTransferencia").value;
+        let valido = true;
+
+        document.getElementById("erroMensagem").textContent = "";
+
+        if (!mensagem.trim()) {
+          document.getElementById("erroMensagem").textContent =
+            "Mensagem obrigatória";
+          valido = false;
+        } else if (mensagem.length > 500) {
+          document.getElementById("erroMensagem").textContent =
+            "Máximo de 500 caracteres";
+          valido = false;
+        }
+
+        return valido;
+      }
+
+      async function verificarStatusDeposito() {
+        try {
+          const response = await fetch(
+            `/api/transacoes/deposito-semestral/status/${professor.id}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            if (data.ultimoDeposito) {
+              const btnDeposito = document.getElementById(
+                "btnDepositoSemestre"
+              );
+              btnDeposito.disabled = data.podeSolicitar === false;
+              if (data.podeSolicitar === false) {
+                btnDeposito.title =
+                  "Você já solicitou o depósito semestral nos últimos 6 meses";
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Erro ao verificar status do depósito:", error);
+        }
+      }
+
+      async function carregarAlunos() {
+        try {
+          const response = await fetch(
+            `/api/transacoes/alunos-por-instituicao/${professor.instituicao.id}`
+          );
+          if (response.ok) {
+            alunos = await response.json();
+            const select = document.getElementById("alunoDestino");
+            select.innerHTML = '<option value="">Selecione um aluno</option>';
+
+            alunos.forEach((aluno) => {
+              const option = document.createElement("option");
+              option.value = aluno.id;
+              option.textContent = `${aluno.nome} (${aluno.saldo} moedas)`;
+              select.appendChild(option);
+            });
+          }
+        } catch (error) {
+          console.error("Erro ao carregar alunos:", error);
+        }
+      }
+
+      function abrirModalDeposito() {
+        document.getElementById("modalDeposito").style.display = "block";
+      }
+
+      function fecharModalDeposito() {
+        document.getElementById("modalDeposito").style.display = "none";
+      }
+
+      function abrirModalTransferencia() {
+        document.getElementById("modalTransferencia").style.display = "block";
+      }
+
+      function fecharModalTransferencia() {
+        document.getElementById("modalTransferencia").style.display = "none";
+      }
+
+      async function solicitarDepositoSemestral() {
+        try {
+          const response = await fetch("/api/transacoes/deposito-semestral", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              professorId: professor.id,
+              instituicaoId: professor.instituicao.id,
+            }),
+          });
+
+          if (response.ok) {
+            const transacao = await response.json();
+            professor.saldo += 1000;
+            localStorage.setItem("usuario", JSON.stringify(professor));
+            document.getElementById("saldoProfessor").textContent =
+              professor.saldo;
+
+            document.getElementById("btnDepositoSemestre").disabled = true;
+
+            fecharModalDeposito();
+            mostrarMensagem(
+              "Depósito de 1000 moedas realizado com sucesso!",
+              "sucesso"
+            );
+          } else {
+            const error = await response.text();
+            mostrarMensagem(`Erro: ${error}`, "erro");
+          }
+        } catch (error) {
+          console.error("Erro ao solicitar depósito:", error);
+          mostrarMensagem("Erro ao solicitar depósito");
+        }
+      }
+
+      async function confirmarTransferencia() {
+        const alunoId = document.getElementById("alunoDestino").value;
+        const quantidade = parseInt(
+          document.getElementById("quantidadeMoedas").value
+        );
+        const mensagem = document.getElementById("mensagemTransferencia").value;
+
+        // Limpar todos os erros
+        document.getElementById("erroQuantidade").textContent = "";
+        document.getElementById("erroMensagem").textContent = "";
+
+        // Validações
+        let valido = true;
+
+        if (!alunoId) {
+          mostrarMensagem("Selecione um aluno", "erro");
+          valido = false;
+        }
+
+        if (isNaN(quantidade)) {
+          document.getElementById("erroQuantidade").textContent =
+            "Informe uma quantidade válida";
+          valido = false;
+        } else if (quantidade <= 0) {
+          document.getElementById("erroQuantidade").textContent =
+            "A quantidade deve ser maior que zero";
+          valido = false;
+        } else if (quantidade > professor.saldo) {
+          document.getElementById("erroQuantidade").textContent =
+            "Saldo insuficiente";
+          valido = false;
+        }
+
+        // Validação da mensagem
+        if (!mensagem.trim()) {
+          document.getElementById("erroMensagem").textContent =
+            "Mensagem obrigatória", "erro";
+          valido = false;
+        } else if (mensagem.length > 500) {
+          document.getElementById("erroMensagem").textContent =
+            "Máximo de 500 caracteres", "erro";
+          valido = false;
+        }
+
+        if (!valido) return;
+
+        if (!validarFormularioTransferencia()) {
+          return;
+        }
+
+        try {
+          const transacaoDTO = {
+            remetenteId: professor.id,
+            destinatarioId: alunoId,
+            instituicaoId: professor.instituicao.id,
+            valor: quantidade,
+            mensagem: mensagem,
+          };
+
+          const response = await fetch("/api/transacoes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(transacaoDTO),
+          });
+
+          if (response.ok) {
+            const transacao = await response.json();
+
+            professor.saldo -= quantidade;
+            localStorage.setItem("usuario", JSON.stringify(professor));
+            document.getElementById("saldoProfessor").textContent =
+              professor.saldo;
+
+            await carregarAlunos();
+
+            fecharModalTransferencia();
+            mostrarMensagem("Transferência realizada com sucesso!", "sucesso");
+          } else {
+            const error = await response.text();
+            mostrarMensagem(`Erro: ${error}`, "erro");
+          }
+        } catch (error) {
+          console.error("Erro ao realizar transferência:", error);
+          mostrarMensagem("Erro ao realizar transferência");
+        }
+      }
+
+      function mostrarMensagem(texto, tipo) {
+        const divMensagem = document.getElementById("mensagem");
+        divMensagem.textContent = texto;
+        divMensagem.className = "mensagem " + tipo;
+        divMensagem.style.display = "block";
+
+        setTimeout(() => {
+          divMensagem.style.display = "none";
+        }, 5000);
+      }
 
       function logout() {
         localStorage.removeItem("usuario");

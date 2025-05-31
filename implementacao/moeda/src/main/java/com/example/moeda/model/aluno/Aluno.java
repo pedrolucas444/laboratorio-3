@@ -18,7 +18,7 @@ public class Aluno extends Pessoa {
     @Column(nullable = false, unique = true)
     private String rg;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
     @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Curso curso;

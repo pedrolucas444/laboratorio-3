@@ -28,6 +28,7 @@ public class Departamento {
     private List<Curso> cursos;
     
     @OneToMany(mappedBy = "departamento")
+    @JsonIgnoreProperties("departamento")
     private List<Professor> professores;
 
     public Departamento() {}

@@ -80,6 +80,22 @@
         await carregarInstituicoes();
       });
 
+      function limparErroCampo(campo) {
+        campo.classList.remove("campo-invalido");
+        const errorSpan = campo.parentElement.querySelector(".error-message");
+        if (errorSpan) {
+          errorSpan.remove();
+        }
+      }
+
+      document.getElementById("cpf").addEventListener("input", function () {
+        limparErroCampo(this);
+      });
+
+      document.getElementById("email").addEventListener("input", function () {
+        limparErroCampo(this);
+      });
+
       document
         .getElementById("email")
         .addEventListener("blur", async function () {
