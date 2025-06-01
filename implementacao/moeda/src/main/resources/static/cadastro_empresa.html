@@ -101,16 +101,14 @@
             const response = await fetch(
               `/api/empresas/verificar-cnpj?cnpj=${encodeURIComponent(cnpj)}`
             );
-            if (response.ok) {
-              const existe = await response.json();
-              if (existe) {
-                mostrarErro(this, "CNPJ já cadastrado");
-              } else {
-                limparErroCampo(this);
-              }
+            const existe = await response.json();
+            if (existe) {
+              mostrarErro(this, "CNPJ já cadastrado");
+            } else {
+              limparErroCampo(this);
             }
           } else {
-            limparErroCampo(this); 
+            limparErroCampo(this);
           }
         });
 

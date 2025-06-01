@@ -72,6 +72,18 @@
       .close:hover {
         color: black;
       }
+      .sair {
+        background-color: red;
+      }
+      .sair:hover {
+        background-color: darkred;
+      }
+      .extrato {
+        background-color: darkorange;
+      }
+      .extrato:hover {
+        background-color: darkgoldenrod;
+      }
     </style>
   </head>
   <body>
@@ -79,10 +91,14 @@
       <h1>Área do Aluno</h1>
       <div>
         <span class="saldo">Saldo: <span id="saldo">0</span> moedas</span>
-        <button onclick="abrirModalExtrato()" style="margin-left: 10px">
+        <button
+          class="extrato"
+          onclick="abrirModalExtrato()"
+          style="margin-left: 10px"
+        >
           Ver Extrato
         </button>
-        <button onclick="logout()">Sair</button>
+        <button class="sair" onclick="logout()">Sair</button>
       </div>
     </header>
 

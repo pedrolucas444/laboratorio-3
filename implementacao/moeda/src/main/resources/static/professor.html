@@ -65,9 +65,6 @@
         font-weight: bold;
         margin-right: 20px;
       }
-      .actions {
-        margin-top: 20px;
-      }
       .actions button {
         margin-right: 10px;
       }
@@ -91,32 +88,6 @@
         margin-top: 20px;
       }
 
-      .btn-sair {
-        background-color: #dc3545 !important;
-        margin-top: 15px;
-      }
-
-      .btn-sair:hover {
-        background-color: #bd2130 !important;
-      }
-      .mensagem {
-        padding: 10px;
-        margin: 15px 0;
-        border-radius: 4px;
-        display: none;
-      }
-
-      .mensagem.sucesso {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-      }
-
-      .mensagem.erro {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-      }
       .btn-sair {
         background-color: #dc3545 !important;
         margin-top: 15px;
@@ -155,6 +126,18 @@
         color: #721c24;
         border: 1px solid #f5c6cb;
       }
+      .extrato {
+        background-color: darkorange;
+      }
+      .extrato:hover {
+        background-color: darkgoldenrod;
+      }
+      .transferir {
+        background-color: rgb(0, 0, 197);
+      }
+      .transferir:hover {
+        background-color: darkblue;
+      }
     </style>
   </head>
 
@@ -167,18 +150,17 @@
           <span class="saldo">
             Saldo: <span id="saldoProfessor">0</span> moedas
           </span>
-                  <button onclick="abrirModalExtrato()" style="margin-left: 10px">
-          Ver Extrato
-        </button>
         </div>
-
       </header>
 
       <div class="actions">
+        <button class="extrato" onclick="abrirModalExtrato()">
+          Ver Extrato
+        </button>
         <button id="btnDepositoSemestre" onclick="abrirModalDeposito()">
           Solicitar Depósito do Semestre
         </button>
-        <button onclick="abrirModalTransferencia()">
+        <button class="transferir" onclick="abrirModalTransferencia()">
           Transferir Moedas para Aluno
         </button>
         <button class="btn-sair" onclick="logout()">Sair</button>
@@ -625,10 +607,13 @@
             const descCell = document.createElement("td");
             descCell.style.padding = "8px";
             descCell.textContent = transacao.mensagem || "Sem descrição";
-            
+
             valorCell.style.padding = "8px";
-            
-            if (transacao.remetente.id === usuario.id && transacao.destinatario.id === usuario.id) {
+
+            if (
+              transacao.remetente.id === usuario.id &&
+              transacao.destinatario.id === usuario.id
+            ) {
               tipoCell.textContent = "Transferência Recebida";
               valorCell.textContent = `+${transacao.valor} moedas`;
               valorCell.style.color = "green";
@@ -643,8 +628,6 @@
                 transacao.mensagem || "Sem descrição"
               }`;
             }
-
-            
 
             row.appendChild(dataCell);
             row.appendChild(tipoCell);
