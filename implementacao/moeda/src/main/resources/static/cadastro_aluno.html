@@ -201,8 +201,7 @@
         .getElementById("cpf")
         .addEventListener("blur", async function () {
           const cpf = this.value.replace(/\D/g, "");
-          if (cpf && cpf.length === 11) {
-            // Só verifica se tem 11 dígitos
+          if (cpf.length === 11) {
             const response = await fetch(
               `/api/alunos/verificar-cpf?cpf=${encodeURIComponent(cpf)}`
             );
@@ -211,16 +210,17 @@
               if (existe) {
                 mostrarErro(this, "CPF já cadastrado");
               } else {
-                clearErrorForField(this);
+                limparErroCampo(this);
               }
             }
+          } else {
+            limparErroCampo(this);
           }
         });
 
       document.getElementById("rg").addEventListener("blur", async function () {
         const rg = this.value.replace(/\D/g, "");
-        if (rg && rg.length >= 8 && rg.length <= 10) {
-          // Só verifica se tem entre 8 e 10 dígitos
+        if (rg.length >= 8 && rg.length <= 10) {
           const response = await fetch(
             `/api/alunos/verificar-rg?rg=${encodeURIComponent(rg)}`
           );
@@ -229,9 +229,11 @@
             if (existe) {
               mostrarErro(this, "RG já cadastrado");
             } else {
-              clearErrorForField(this);
+              limparErroCampo(this);
             }
           }
+        } else {
+          limparErroCampo(this);
         }
       });
 
@@ -290,26 +292,30 @@
         }
 
         // Verificar CPF
-        const cpfResponse = await fetch(
-          `/api/alunos/verificar-cpf?cpf=${encodeURIComponent(alunoDTO.cpf)}`
-        );
-        if (cpfResponse.ok) {
-          const cpfExiste = await cpfResponse.json();
-          if (cpfExiste) {
-            mostrarErro(document.getElementById("cpf"), "CPF já cadastrado");
-            erros.push("cpf");
+        if (alunoDTO.cpf.length === 11) {
+          const cpfResponse = await fetch(
+            `/api/alunos/verificar-cpf?cpf=${encodeURIComponent(alunoDTO.cpf)}`
+          );
+          if (cpfResponse.ok) {
+            const cpfExiste = await cpfResponse.json();
+            if (cpfExiste) {
+              mostrarErro(document.getElementById("cpf"), "CPF já cadastrado");
+              erros.push("cpf");
+            }
           }
         }
 
         // Verificar RG
-        const rgResponse = await fetch(
-          `/api/alunos/verificar-rg?rg=${encodeURIComponent(alunoDTO.rg)}`
-        );
-        if (rgResponse.ok) {
-          const rgExiste = await rgResponse.json();
-          if (rgExiste) {
-            mostrarErro(document.getElementById("rg"), "RG já cadastrado");
-            erros.push("rg");
+        if (alunoDTO.rg.length >= 8 && alunoDTO.rg.length <= 10) {
+          const rgResponse = await fetch(
+            `/api/alunos/verificar-rg?rg=${encodeURIComponent(alunoDTO.rg)}`
+          );
+          if (rgResponse.ok) {
+            const rgExiste = await rgResponse.json();
+            if (rgExiste) {
+              mostrarErro(document.getElementById("rg"), "RG já cadastrado");
+              erros.push("rg");
+            }
           }
         }
 

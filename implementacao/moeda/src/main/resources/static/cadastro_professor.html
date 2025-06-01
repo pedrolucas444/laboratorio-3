@@ -114,15 +114,19 @@
       document
         .getElementById("cpf")
         .addEventListener("blur", async function () {
-          const cpf = this.value;
-          if (cpf) {
+          const cpf = this.value.replace(/\D/g, "");
+          if (cpf.length === 11) {
             const response = await fetch(
               `/api/auth/verificar-cpf?cpf=${encodeURIComponent(cpf)}`
             );
             const existe = await response.json();
             if (existe) {
               mostrarErro(this, "CPF já cadastrado");
+            } else {
+              limparErroCampo(this);
             }
+          } else {
+            limparErroCampo(this);
           }
         });
 
@@ -240,15 +244,17 @@
         }
 
         // Verificar CPF
-        const cpfResponse = await fetch(
-          `/api/professores/verificar-cpf?cpf=${encodeURIComponent(
-            professorDTO.cpf
-          )}`
-        );
-        const cpfExiste = await cpfResponse.json();
-        if (cpfExiste) {
-          mostrarErro(document.getElementById("cpf"), "CPF já cadastrado");
-          erros.push("cpf");
+        if (professorDTO.cpf.length === 11) {
+          const cpfResponse = await fetch(
+            `/api/professores/verificar-cpf?cpf=${encodeURIComponent(
+              professorDTO.cpf
+            )}`
+          );
+          const cpfExiste = await cpfResponse.json();
+          if (cpfExiste) {
+            mostrarErro(document.getElementById("cpf"), "CPF já cadastrado");
+            erros.push("cpf");
+          }
         }
 
         return erros;
