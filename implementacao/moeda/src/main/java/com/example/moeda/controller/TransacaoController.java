@@ -2,7 +2,6 @@ package com.example.moeda.controller;
 
 import com.example.moeda.dto.DepositoSemestralDTO;
 import com.example.moeda.dto.TransacaoDTO;
-import com.example.moeda.model.*;
 import com.example.moeda.model.aluno.Aluno;
 import com.example.moeda.model.instituicao.Instituicao;
 import com.example.moeda.model.pessoa.Pessoa;
@@ -148,5 +147,17 @@ public class TransacaoController {
         response.put("podeSolicitar", podeSolicitar);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/por-remetente/{pessoaId}")
+    public ResponseEntity<List<Transacao>> listarTransacoesComoRemetente(@PathVariable Long pessoaId) {
+        List<Transacao> transacoes = transacaoRepository.findByRemetenteId(pessoaId);
+        return ResponseEntity.ok(transacoes);
+    }
+
+    @GetMapping("/por-destinatario/{pessoaId}")
+    public ResponseEntity<List<Transacao>> listarTransacoesComoDestinatario(@PathVariable Long pessoaId) {
+        List<Transacao> transacoes = transacaoRepository.findByDestinatarioId(pessoaId);
+        return ResponseEntity.ok(transacoes);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.moeda.model.transacao;
 
 import com.example.moeda.model.pessoa.Pessoa;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.example.moeda.model.instituicao.Instituicao;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -18,10 +19,12 @@ public class Transacao {
 
     @ManyToOne
     @JoinColumn(name = "remetente_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Pessoa remetente;
 
     @ManyToOne
     @JoinColumn(name = "destinatario_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Pessoa destinatario;
 
     @ManyToOne

@@ -166,6 +166,9 @@
           <span id="nomeProfessor"></span>
           <span class="saldo">
             Saldo: <span id="saldoProfessor">0</span> moedas
+            <button onclick="abrirModalExtrato()" style="margin-left: 10px">
+              Ver Extrato
+            </button>
           </span>
         </div>
       </header>
@@ -240,6 +243,59 @@
         >
           Confirmar Transferência
         </button>
+      </div>
+    </div>
+
+    <!-- Modal de Extrato -->
+    <div id="modalExtrato" class="modal">
+      <div class="modal-content" style="max-width: 800px">
+        <span class="close" onclick="fecharModalExtrato()">&times;</span>
+        <h2>Extrato de Transações</h2>
+        <div id="extratoProfessor" style="max-height: 400px; overflow-y: auto">
+          <table style="width: 100%; border-collapse: collapse">
+            <thead>
+              <tr style="background-color: #f2f2f2">
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Data
+                </th>
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Tipo
+                </th>
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Valor
+                </th>
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Descrição
+                </th>
+              </tr>
+            </thead>
+            <tbody id="extratoProfessorBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -434,12 +490,14 @@
 
         // Validação da mensagem
         if (!mensagem.trim()) {
-          document.getElementById("erroMensagem").textContent =
-            "Mensagem obrigatória", "erro";
+          (document.getElementById("erroMensagem").textContent =
+            "Mensagem obrigatória"),
+            "erro";
           valido = false;
         } else if (mensagem.length > 500) {
-          document.getElementById("erroMensagem").textContent =
-            "Máximo de 500 caracteres", "erro";
+          (document.getElementById("erroMensagem").textContent =
+            "Máximo de 500 caracteres"),
+            "erro";
           valido = false;
         }
 
@@ -503,6 +561,90 @@
         localStorage.removeItem("usuario");
         localStorage.removeItem("tipo");
         window.location.href = "/login.html";
+      }
+
+      function abrirModalExtrato() {
+        document.getElementById("modalExtrato").style.display = "block";
+        carregarExtratoProfessor();
+      }
+
+      function fecharModalExtrato() {
+        document.getElementById("modalExtrato").style.display = "none";
+      }
+
+      async function carregarExtratoProfessor() {
+        try {
+          const usuario = JSON.parse(localStorage.getItem("usuario"));
+          const [comoRemetente, comoDestinatario] = await Promise.all([
+            fetch(`/api/transacoes/por-remetente/${usuario.id}`).then((res) => {
+              if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+              return res.json();
+            }),
+            fetch(`/api/transacoes/por-destinatario/${usuario.id}`).then(
+              (res) => {
+                if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+                return res.json();
+              }
+            ),
+          ]);
+
+          const todasTransacoes = [...comoRemetente, ...comoDestinatario];
+          todasTransacoes.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+          const tbody = document.getElementById("extratoProfessorBody");
+          tbody.innerHTML = "";
+
+          if (todasTransacoes.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 4;
+            cell.textContent = "Nenhuma transação encontrada";
+            cell.style.textAlign = "center";
+            cell.style.padding = "20px";
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            return;
+          }
+
+          todasTransacoes.forEach((transacao) => {
+            const row = document.createElement("tr");
+            row.style.borderBottom = "1px solid #ddd";
+
+            const dataCell = document.createElement("td");
+            dataCell.style.padding = "8px";
+            dataCell.textContent = new Date(transacao.data).toLocaleString();
+
+            const tipoCell = document.createElement("td");
+            tipoCell.style.padding = "8px";
+
+            const isRemetente = transacao.remetente.id === usuario.id;
+            tipoCell.textContent = isRemetente ? "Transferência" : "Depósito";
+
+            const valorCell = document.createElement("td");
+            valorCell.style.padding = "8px";
+            if (isRemetente) {
+              valorCell.textContent = `-${transacao.valor} moedas`;
+              valorCell.style.color = "red";
+            } else {
+              valorCell.textContent = `+${transacao.valor} moedas`;
+              valorCell.style.color = "green";
+            }
+
+            const descCell = document.createElement("td");
+            descCell.style.padding = "8px";
+            descCell.textContent = transacao.mensagem || "Sem descrição";
+
+            row.appendChild(dataCell);
+            row.appendChild(tipoCell);
+            row.appendChild(valorCell);
+            row.appendChild(descCell);
+
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          console.error("Erro ao carregar extrato:", error);
+          alert("Erro ao carregar extrato: " + error.message);
+        }
       }
     </script>
   </body>

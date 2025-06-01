@@ -46,6 +46,32 @@
       button:hover {
         background-color: #45a049;
       }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover {
+        color: black;
+      }
     </style>
   </head>
   <body>
@@ -53,12 +79,68 @@
       <h1>Área do Aluno</h1>
       <div>
         <span class="saldo">Saldo: <span id="saldo">0</span> moedas</span>
+        <button onclick="abrirModalExtrato()" style="margin-left: 10px">
+          Ver Extrato
+        </button>
         <button onclick="logout()">Sair</button>
       </div>
     </header>
 
     <h2>Vantagens Disponíveis</h2>
     <div id="vantagens" class="vantagens"></div>
+
+    <!-- Modal de Extrato -->
+    <div id="modalExtrato" class="modal">
+      <div class="modal-content" style="max-width: 800px">
+        <span class="close" onclick="fecharModalExtrato()">&times;</span>
+        <h2>Extrato de Transações</h2>
+        <div id="extratoAluno" style="max-height: 400px; overflow-y: auto">
+          <table style="width: 100%; border-collapse: collapse">
+            <thead>
+              <tr style="background-color: #f2f2f2">
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Data
+                </th>
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Tipo
+                </th>
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Valor
+                </th>
+                <th
+                  style="
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  Descrição
+                </th>
+              </tr>
+            </thead>
+            <tbody id="extratoAlunoBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
@@ -122,6 +204,76 @@
         localStorage.removeItem("usuario");
         localStorage.removeItem("tipo");
         window.location.href = "login.html";
+      }
+
+      function abrirModalExtrato() {
+        document.getElementById("modalExtrato").style.display = "block";
+        carregarExtratoAluno();
+      }
+
+      function fecharModalExtrato() {
+        document.getElementById("modalExtrato").style.display = "none";
+      }
+
+      async function carregarExtratoAluno() {
+        try {
+          const usuario = JSON.parse(localStorage.getItem("usuario"));
+          const response = await fetch(
+            `/api/transacoes/por-destinatario/${usuario.id}`
+          );
+          if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+          }
+
+          const transacoes = await response.json();
+
+          const tbody = document.getElementById("extratoAlunoBody");
+          tbody.innerHTML = "";
+
+          if (!transacoes || transacoes.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 4;
+            cell.textContent = "Nenhuma transação encontrada";
+            cell.style.textAlign = "center";
+            cell.style.padding = "20px";
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            return;
+          }
+
+          transacoes.forEach((transacao) => {
+            const row = document.createElement("tr");
+            row.style.borderBottom = "1px solid #ddd";
+
+            const dataCell = document.createElement("td");
+            dataCell.style.padding = "8px";
+            dataCell.textContent = new Date(transacao.data).toLocaleString();
+
+            const tipoCell = document.createElement("td");
+            tipoCell.style.padding = "8px";
+            tipoCell.textContent = "Crédito";
+
+            const valorCell = document.createElement("td");
+            valorCell.style.padding = "8px";
+            valorCell.textContent = `+${transacao.valor} moedas`;
+            valorCell.style.color = "green";
+
+            const descCell = document.createElement("td");
+            descCell.style.padding = "8px";
+            descCell.textContent = transacao.mensagem || "Sem descrição";
+
+            row.appendChild(dataCell);
+            row.appendChild(tipoCell);
+            row.appendChild(valorCell);
+            row.appendChild(descCell);
+
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          console.error("Erro ao carregar extrato:", error);
+          alert("Erro ao carregar extrato: " + error.message);
+        }
       }
     </script>
   </body>
