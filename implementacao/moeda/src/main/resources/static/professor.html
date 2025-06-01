@@ -166,11 +166,12 @@
           <span id="nomeProfessor"></span>
           <span class="saldo">
             Saldo: <span id="saldoProfessor">0</span> moedas
-            <button onclick="abrirModalExtrato()" style="margin-left: 10px">
-              Ver Extrato
-            </button>
           </span>
+                  <button onclick="abrirModalExtrato()" style="margin-left: 10px">
+          Ver Extrato
+        </button>
         </div>
+
       </header>
 
       <div class="actions">
@@ -621,18 +622,29 @@
             tipoCell.textContent = isRemetente ? "Transferência" : "Depósito";
 
             const valorCell = document.createElement("td");
-            valorCell.style.padding = "8px";
-            if (isRemetente) {
-              valorCell.textContent = `-${transacao.valor} moedas`;
-              valorCell.style.color = "red";
-            } else {
-              valorCell.textContent = `+${transacao.valor} moedas`;
-              valorCell.style.color = "green";
-            }
-
             const descCell = document.createElement("td");
             descCell.style.padding = "8px";
             descCell.textContent = transacao.mensagem || "Sem descrição";
+            
+            valorCell.style.padding = "8px";
+            
+            if (transacao.remetente.id === usuario.id && transacao.destinatario.id === usuario.id) {
+              tipoCell.textContent = "Transferência Recebida";
+              valorCell.textContent = `+${transacao.valor} moedas`;
+              valorCell.style.color = "green";
+              descCell.textContent = `De: Reitoria - ${
+                transacao.mensagem || "Deposito Semestral"
+              }`;
+            } else if (transacao.remetente.id === usuario.id) {
+              tipoCell.textContent = "Transferência Enviada";
+              valorCell.textContent = `-${transacao.valor} moedas`;
+              valorCell.style.color = "Red";
+              descCell.textContent = `Para: ${transacao.destinatario.nome} - ${
+                transacao.mensagem || "Sem descrição"
+              }`;
+            }
+
+            
 
             row.appendChild(dataCell);
             row.appendChild(tipoCell);

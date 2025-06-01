@@ -96,17 +96,31 @@
       document
         .getElementById("cnpj")
         .addEventListener("blur", async function () {
-          const cnpj = this.value;
-          if (cnpj) {
+          const cnpj = this.value.replace(/\D/g, "");
+          if (cnpj.length === 14) {
             const response = await fetch(
-              `/api/auth/verificar-cnpj?cnpj=${encodeURIComponent(cnpj)}`
+              `/api/empresas/verificar-cnpj?cnpj=${encodeURIComponent(cnpj)}`
             );
-            const existe = await response.json();
-            if (existe) {
-              mostrarErro(this, "CNPJ já cadastrado");
+            if (response.ok) {
+              const existe = await response.json();
+              if (existe) {
+                mostrarErro(this, "CNPJ já cadastrado");
+              } else {
+                limparErroCampo(this);
+              }
             }
+          } else {
+            limparErroCampo(this); 
           }
         });
+
+      function limparErroCampo(campo) {
+        campo.classList.remove("campo-invalido");
+        const errorSpan = campo.parentElement.querySelector(".error-message");
+        if (errorSpan) {
+          errorSpan.remove();
+        }
+      }
 
       // Funções de validação
       function mostrarErro(campo, mensagem) {

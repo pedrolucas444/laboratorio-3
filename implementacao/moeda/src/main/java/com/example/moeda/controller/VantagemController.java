@@ -46,6 +46,7 @@ public class VantagemController {
         vantagem.setValor(vantagemDTO.getValor());
         vantagem.setDescricao(vantagemDTO.getDescricao());
         vantagem.setEmpresa(empresa.get());
+        vantagem.setImagemUrl(vantagemDTO.getImagemUrl());
 
         Vantagem savedVantagem = vantagemRepository.save(vantagem);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedVantagem);

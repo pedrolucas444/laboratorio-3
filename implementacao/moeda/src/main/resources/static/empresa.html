@@ -76,6 +76,12 @@
         margin: 10px 0;
         text-align: center;
       }
+      .vantagem img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body>
@@ -97,6 +103,14 @@
       <div class="form-group">
         <label for="descricao">Descrição:</label>
         <textarea id="descricao" rows="4" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="imagemUrl">URL da Imagem:</label>
+        <input
+          type="text"
+          id="imagemUrl"
+          placeholder="https://exemplo.com/imagem.jpg"
+        />
       </div>
       <button type="button" onclick="cadastrarVantagem()">
         Cadastrar Vantagem
@@ -130,6 +144,11 @@
             div.className = "vantagem";
             div.innerHTML = `
             <h3>${vantagem.titulo}</h3>
+            ${
+              vantagem.imagemUrl
+                ? `<img src="${vantagem.imagemUrl}" style="max-width: 100%; height: auto; margin-bottom: 10px;">`
+                : ""
+            }
             <p>${vantagem.descricao}</p>
             <p>Valor: ${vantagem.valor} moedas</p>
             <button onclick="removerVantagem(${vantagem.id})">Remover</button>
@@ -176,6 +195,7 @@
         const titulo = document.getElementById("titulo");
         const valor = document.getElementById("valor");
         const descricao = document.getElementById("descricao");
+        const imagemUrl = document.getElementById("imagemUrl").value;
 
         // Resetar estados
         titulo.classList.remove("campo-invalido");
@@ -227,6 +247,7 @@
               titulo: titulo.value,
               valor: parseInt(valor.value),
               descricao: descricao.value,
+              imagemUrl: imagemUrl,
               empresaId: usuario.id,
             }),
           });
