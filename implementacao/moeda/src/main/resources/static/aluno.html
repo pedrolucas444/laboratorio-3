@@ -189,7 +189,7 @@
                                   : ""
                               }
                               <p>${vantagem.descricao}</p>
-                              <p>Valor: ${vantagem.valor} moedas</p>
+                              <p>Valor: ${vantagem.valor}</p>
                               <p>Empresa: ${vantagem.empresa.nome}</p>
                               <button onclick="resgatarVantagem(${
                                 vantagem.id
@@ -279,7 +279,7 @@
 
             const valorCell = document.createElement("td");
             valorCell.style.padding = "8px";
-            valorCell.textContent = `+${transacao.valor} moedas`;
+            valorCell.textContent = `+${transacao.valor} `;
             valorCell.style.color = "green";
 
             const descCell = document.createElement("td");
@@ -288,14 +288,14 @@
 
             if (transacao.remetente.id === usuario.id) {
               tipoCell.textContent = "Transferencia";
-              valorCell.textContent = `+${transacao.valor} moedas`;
+              valorCell.textContent = `+${transacao.valor} `;
               valorCell.style.color = "red";
               descCell.textContent = `Para: ${transacao.destinatario.nome} - ${
                 transacao.mensagem || "Sem descrição"
               }`;
             } else {
               tipoCell.textContent = "Transferencia Recebida";
-              valorCell.textContent = `+${transacao.valor} moedas`;
+              valorCell.textContent = `+${transacao.valor} `;
               valorCell.style.color = "green";
               descCell.textContent = `De: ${transacao.remetente.nome} - ${
                 transacao.mensagem || "Sem descrição"

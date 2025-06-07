@@ -99,7 +99,8 @@ public class TransacaoController {
             Optional<Transacao> ultimoDeposito = transacaoRepository
                     .findTopByRemetenteIdAndValorOrderByDataDesc(professor.getId(), 1000);
 
-            if (ultimoDeposito.isPresent() && ultimoDeposito.get().getData().isAfter(seisMesesAtras)) {
+             //if (ultimoDeposito.isPresent() && ultimoDeposito.get().getData().isAfter(seisMesesAtras)) {
+            if (false) {
                 return ResponseEntity.badRequest().build();
             }
 

@@ -421,7 +421,7 @@
             document.getElementById("saldoProfessor").textContent =
               professor.saldo;
 
-            document.getElementById("btnDepositoSemestre").disabled = true;
+            document.getElementById("btnDepositoSemestre").disabled = false;
 
             fecharModalDeposito();
             mostrarMensagem(
@@ -571,7 +571,17 @@
             ),
           ]);
 
-          const todasTransacoes = [...comoRemetente, ...comoDestinatario];
+          const todasTransacoes = [
+            ...comoRemetente,
+            ...comoDestinatario,
+          ].filter(
+            (transacao, index, self) =>
+              transacao.remetente.id !== transacao.destinatario.id ||
+              self.findIndex(
+                (t) =>
+                  t.id === transacao.id && t.remetente.id === t.destinatario.id
+              ) === index
+          );
           todasTransacoes.sort((a, b) => new Date(b.data) - new Date(a.data));
 
           const tbody = document.getElementById("extratoProfessorBody");
@@ -600,26 +610,18 @@
             const tipoCell = document.createElement("td");
             tipoCell.style.padding = "8px";
 
-            const isRemetente = transacao.remetente.id === usuario.id;
-            tipoCell.textContent = isRemetente ? "Transferência" : "Depósito";
-
             const valorCell = document.createElement("td");
-            const descCell = document.createElement("td");
-            descCell.style.padding = "8px";
-            descCell.textContent = transacao.mensagem || "Sem descrição";
-
             valorCell.style.padding = "8px";
 
-            if (
-              transacao.remetente.id === usuario.id &&
-              transacao.destinatario.id === usuario.id
-            ) {
-              tipoCell.textContent = "Transferência Recebida";
-              valorCell.textContent = `+${transacao.valor} moedas`;
+            const descCell = document.createElement("td");
+            descCell.style.padding = "8px";
+
+            if (transacao.remetente.id === transacao.destinatario.id) {
+              // Caso especial: depósito semestral
+              tipoCell.textContent = "Depósito Semestral";
+              valorCell.textContent = `+${transacao.valor}`;
               valorCell.style.color = "green";
-              descCell.textContent = `De: Reitoria - ${
-                transacao.mensagem || "Deposito Semestral"
-              }`;
+              descCell.textContent =transacao.mensagem || "Depósito automático";
             } else if (transacao.remetente.id === usuario.id) {
               tipoCell.textContent = "Transferência Enviada";
               valorCell.textContent = `-${transacao.valor} moedas`;
