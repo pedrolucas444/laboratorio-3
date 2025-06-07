@@ -110,6 +110,39 @@
       <div class="modal-content" style="max-width: 800px">
         <span class="close" onclick="fecharModalExtrato()">&times;</span>
         <h2>Extrato de Transações</h2>
+        <div
+          style="
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 10px;
+            "
+          >
+            <span
+              >Total Recebido:
+              <span id="totalRecebido" style="color: green; font-weight: bold"
+                >0</span
+              ></span
+            >
+            <span
+              >Total Resgatado:
+              <span id="totalResgatado" style="color: red; font-weight: bold"
+                >0</span
+              ></span
+            >
+          </div>
+          <div style="text-align: right; font-size: 1.1em">
+            Saldo Calculado:
+            <span id="saldoCalculado" style="font-weight: bold">0</span>
+          </div>
+        </div>
         <div id="extratoAluno" style="max-height: 400px; overflow-y: auto">
           <table style="width: 100%; border-collapse: collapse">
             <thead>
@@ -204,21 +237,34 @@
 
       async function resgatarVantagem(vantagemId, valor) {
         const usuario = JSON.parse(localStorage.getItem("usuario"));
+
         if (usuario.saldo < valor) {
-          alert("Saldo insuficiente para resgatar esta vantagem!");
+          alert("Saldo insuficiente!");
           return;
         }
 
-        if (confirm(`Deseja resgatar esta vantagem por ${valor} moedas?`)) {
+        if (confirm(`Resgatar por ${valor} moedas?`)) {
           try {
-            // Aqui você implementaria a lógica para resgatar a vantagem
-            // Atualizando o saldo do aluno e vinculando a vantagem
-            alert("Vantagem resgatada com sucesso!");
-            usuario.saldo -= valor;
-            localStorage.setItem("usuario", JSON.stringify(usuario));
-            document.getElementById("saldo").textContent = usuario.saldo;
+            const response = await fetch("/api/transacoes/resgatar-vantagem", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                alunoId: usuario.id,
+                vantagemId: vantagemId,
+              }),
+            });
+
+            if (response.ok) {
+              usuario.saldo -= valor;
+              localStorage.setItem("usuario", JSON.stringify(usuario));
+              document.getElementById("saldo").textContent = usuario.saldo;
+
+              alert("Resgate realizado!");
+            } else {
+              alert("Erro no resgate");
+            }
           } catch (error) {
-            alert("Erro ao resgatar vantagem");
+            alert("Erro: " + error.message);
           }
         }
       }
@@ -241,6 +287,7 @@
       async function carregarExtratoAluno() {
         try {
           const usuario = JSON.parse(localStorage.getItem("usuario"));
+
           const response = await fetch(
             `/api/transacoes/por-destinatario/${usuario.id}`
           );
@@ -252,6 +299,9 @@
 
           const tbody = document.getElementById("extratoAlunoBody");
           tbody.innerHTML = "";
+
+          let totalRecebido = 0;
+          let totalResgatado = 0;
 
           if (!transacoes || transacoes.length === 0) {
             const row = document.createElement("tr");
@@ -275,29 +325,47 @@
 
             const tipoCell = document.createElement("td");
             tipoCell.style.padding = "8px";
-            tipoCell.textContent = "Crédito";
 
             const valorCell = document.createElement("td");
             valorCell.style.padding = "8px";
-            valorCell.textContent = `+${transacao.valor} `;
-            valorCell.style.color = "green";
 
             const descCell = document.createElement("td");
             descCell.style.padding = "8px";
-            descCell.textContent = transacao.mensagem || "Sem descrição";
 
-            if (transacao.remetente.id === usuario.id) {
-              tipoCell.textContent = "Transferencia";
-              valorCell.textContent = `+${transacao.valor} `;
+            // Tratamento para resgates (quando remetente = destinatário)
+            if (
+              transacao.remetente &&
+              transacao.remetente.id === transacao.destinatario.id
+            ) {
+              tipoCell.textContent = "Resgate de Vantagem";
+              valorCell.textContent = `-${transacao.valor}`;
               valorCell.style.color = "red";
-              descCell.textContent = `Para: ${transacao.destinatario.nome} - ${
-                transacao.mensagem || "Sem descrição"
-              }`;
-            } else {
-              tipoCell.textContent = "Transferencia Recebida";
-              valorCell.textContent = `+${transacao.valor} `;
+              descCell.textContent =
+                transacao.mensagem || "Recompensa resgatada";
+              totalResgatado += transacao.valor;
+            }
+            // Tratamento para transferências recebidas
+            else if (
+              transacao.remetente &&
+              transacao.remetente.id !== usuario.id
+            ) {
+              tipoCell.textContent = "Transferência Recebida";
+              valorCell.textContent = `+${transacao.valor}`;
               valorCell.style.color = "green";
               descCell.textContent = `De: ${transacao.remetente.nome} - ${
+                transacao.mensagem || "Sem descrição"
+              }`;
+              totalRecebido += transacao.valor;
+            }
+            // Tratamento para transferências enviadas
+            else if (
+              transacao.remetente &&
+              transacao.remetente.id === usuario.id
+            ) {
+              tipoCell.textContent = "Transferência Enviada";
+              valorCell.textContent = `-${transacao.valor}`;
+              valorCell.style.color = "red";
+              descCell.textContent = `Para: ${transacao.destinatario.nome} - ${
                 transacao.mensagem || "Sem descrição"
               }`;
             }
@@ -309,6 +377,12 @@
 
             tbody.appendChild(row);
           });
+
+          document.getElementById("totalRecebido").textContent = totalRecebido;
+          document.getElementById("totalResgatado").textContent =
+            totalResgatado;
+          document.getElementById("saldoCalculado").textContent =
+            totalRecebido - totalResgatado;
         } catch (error) {
           console.error("Erro ao carregar extrato:", error);
           alert("Erro ao carregar extrato: " + error.message);

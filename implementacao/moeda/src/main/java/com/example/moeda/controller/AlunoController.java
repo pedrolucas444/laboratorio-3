@@ -5,9 +5,11 @@ import com.example.moeda.dto.CursoDTO;
 import com.example.moeda.model.aluno.Aluno;
 import com.example.moeda.model.curso.Curso;
 import com.example.moeda.model.instituicao.Instituicao;
+import com.example.moeda.model.transacao.Transacao;
 import com.example.moeda.repository.AlunoRepository;
 import com.example.moeda.repository.CursoRepository;
 import com.example.moeda.repository.InstituicaoRepository;
+import com.example.moeda.repository.TransacaoRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,9 +22,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/alunos")
@@ -31,13 +37,15 @@ public class AlunoController {
     private final AlunoRepository alunoRepository;
     private final CursoRepository cursoRepository;
     private final InstituicaoRepository instituicaoRepository;
+    private final TransacaoRepository transacaoRepository;
 
     public AlunoController(AlunoRepository alunoRepository,
             CursoRepository cursoRepository,
-            InstituicaoRepository instituicaoRepository) {
+            InstituicaoRepository instituicaoRepository, TransacaoRepository transacaoRepository) {
         this.alunoRepository = alunoRepository;
         this.cursoRepository = cursoRepository;
         this.instituicaoRepository = instituicaoRepository;
+        this.transacaoRepository = transacaoRepository;
     }
 
     @Operation(summary = "Criar novo aluno")
@@ -149,5 +157,25 @@ public class AlunoController {
     public ResponseEntity<Boolean> verificarRgExistente(@RequestParam String rg) {
         boolean existe = alunoRepository.existsByRg(rg);
         return ResponseEntity.ok(existe);
+    }
+
+    @GetMapping("/extrato/{alunoId}")
+    public ResponseEntity<Map<String, Object>> getExtratoAluno(@PathVariable Long alunoId) {
+        Map<String, Object> extrato = new HashMap<>();
+
+        List<Transacao> recebidas = transacaoRepository.findByDestinatarioId(alunoId);
+        List<Transacao> enviadas = transacaoRepository.findByRemetenteId(alunoId);
+
+        int totalRecebido = recebidas.stream().mapToInt(Transacao::getValor).sum();
+        int totalResgatado = enviadas.stream().mapToInt(Transacao::getValor).sum();
+
+        extrato.put("transacoes", Stream.concat(recebidas.stream(), enviadas.stream())
+                .sorted(Comparator.comparing(Transacao::getData).reversed())
+                .collect(Collectors.toList()));
+        extrato.put("totalRecebido", totalRecebido);
+        extrato.put("totalResgatado", totalResgatado);
+        extrato.put("saldoCalculado", totalRecebido - totalResgatado);
+
+        return ResponseEntity.ok(extrato);
     }
 }

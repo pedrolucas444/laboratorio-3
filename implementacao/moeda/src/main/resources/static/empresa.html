@@ -118,6 +118,7 @@
           type="text"
           id="imagemUrl"
           placeholder="https://exemplo.com/imagem.jpg"
+          required
         />
       </div>
       <button type="button" onclick="cadastrarVantagem()">
@@ -203,12 +204,15 @@
         const titulo = document.getElementById("titulo");
         const valor = document.getElementById("valor");
         const descricao = document.getElementById("descricao");
-        const imagemUrl = document.getElementById("imagemUrl").value;
+        const imagemUrl = document.getElementById("imagemUrl");
 
         // Resetar estados
         titulo.classList.remove("campo-invalido");
         valor.classList.remove("campo-invalido");
         descricao.classList.remove("campo-invalido");
+        imagemUrl.classList.remove("campo-invalido");
+
+        const errorContainer = document.getElementById("vantagem-errors");
         errorContainer.innerHTML = "";
 
         let isValid = true;
@@ -218,6 +222,12 @@
         if (!titulo.value.trim()) {
           titulo.classList.add("campo-invalido");
           errors.push("Título é obrigatório");
+          isValid = false;
+        }
+
+        if (!imagemUrl.value.trim()) {
+          imagemUrl.classList.add("campo-invalido");
+          errors.push("URL da imagem é obrigatório");
           isValid = false;
         }
 
@@ -255,7 +265,7 @@
               titulo: titulo.value,
               valor: parseInt(valor.value),
               descricao: descricao.value,
-              imagemUrl: imagemUrl,
+              imagemUrl: imagemUrl.value,
               empresaId: usuario.id,
             }),
           });

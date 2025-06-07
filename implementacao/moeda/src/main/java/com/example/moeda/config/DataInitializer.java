@@ -5,6 +5,7 @@ import com.example.moeda.model.departamento.Departamento;
 import com.example.moeda.model.instituicao.Instituicao;
 import com.example.moeda.model.aluno.Aluno;
 import com.example.moeda.model.professor.Professor;
+import com.example.moeda.model.empresa.Empresa;
 import com.example.moeda.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ public class DataInitializer {
                         DepartamentoRepository departamentoRepo,
                         CursoRepository cursoRepo, AlunoRepository alunoRepo,
                         ProfessorRepository professorRepo,
-                        PessoaRepository pessoaRepo) {
+                        PessoaRepository pessoaRepo, EmpresaRepository empresaRepo) {
 
                 return args -> {
                         alunoRepo.deleteAll();
@@ -26,6 +27,7 @@ public class DataInitializer {
                         cursoRepo.deleteAll();
                         departamentoRepo.deleteAll();
                         instituicaoRepo.deleteAll();
+                        empresaRepo.deleteAll();
 
                         Instituicao uf = instituicaoRepo
                                         .save(new Instituicao("Universidade Federal", "12345678901234",
@@ -68,6 +70,9 @@ public class DataInitializer {
                         criarProfessor("professor3", "professor3@gmail.com", "123456",
                                         "12121212121", faculdade, deptAdm, professorRepo);
 
+
+                        criarEmpresa("empresa1", "empresa1@gmail.com", "123456", "11111111111111", empresaRepo);
+
                         System.out.println("Dados iniciais criados:");
                         System.out.println("- Instituições: " + instituicaoRepo.count());
                         System.out.println("- Departamentos: " + departamentoRepo.count());
@@ -103,5 +108,14 @@ public class DataInitializer {
                 professor.setDepartamento(departamento);
                 professor.setSaldo(0);
                 professorRepo.save(professor);
+        }
+
+        private void criarEmpresa(String nome, String email, String senha, String cnpj, EmpresaRepository empresaRepo) {
+                Empresa empresa = new Empresa();
+                empresa.setNome(nome);
+                empresa.setEmail(email);
+                empresa.setSenha(senha);
+                empresa.setCnpj(cnpj);
+                empresaRepo.save(empresa);
         }
 }

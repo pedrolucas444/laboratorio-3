@@ -1,11 +1,13 @@
 package com.example.moeda.controller;
 
 import com.example.moeda.dto.DepositoSemestralDTO;
+import com.example.moeda.dto.ResgateVantagemDTO;
 import com.example.moeda.dto.TransacaoDTO;
 import com.example.moeda.model.aluno.Aluno;
 import com.example.moeda.model.instituicao.Instituicao;
 import com.example.moeda.model.pessoa.Pessoa;
 import com.example.moeda.model.transacao.Transacao;
+import com.example.moeda.model.vantagem.Vantagem;
 import com.example.moeda.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,9 @@ public class TransacaoController {
 
     @Autowired
     private AlunoRepository alunoRepository;
+
+    @Autowired
+    private VantagemRepository vantagemRepository;
 
     @PostMapping
     public ResponseEntity<Transacao> criarTransacao(@RequestBody TransacaoDTO transacaoDTO) {
@@ -99,7 +104,8 @@ public class TransacaoController {
             Optional<Transacao> ultimoDeposito = transacaoRepository
                     .findTopByRemetenteIdAndValorOrderByDataDesc(professor.getId(), 1000);
 
-             //if (ultimoDeposito.isPresent() && ultimoDeposito.get().getData().isAfter(seisMesesAtras)) {
+            // if (ultimoDeposito.isPresent() &&
+            // ultimoDeposito.get().getData().isAfter(seisMesesAtras)) {
             if (false) {
                 return ResponseEntity.badRequest().build();
             }
@@ -160,5 +166,39 @@ public class TransacaoController {
     public ResponseEntity<List<Transacao>> listarTransacoesComoDestinatario(@PathVariable Long pessoaId) {
         List<Transacao> transacoes = transacaoRepository.findByDestinatarioId(pessoaId);
         return ResponseEntity.ok(transacoes);
+    }
+
+    @PostMapping("/resgatar-vantagem")
+    public ResponseEntity<Transacao> resgatarVantagem(@RequestBody ResgateVantagemDTO resgateDTO) {
+        try {
+            Aluno aluno = alunoRepository.findById(resgateDTO.getAlunoId())
+                    .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+            Vantagem vantagem = vantagemRepository.findById(resgateDTO.getVantagemId())
+                    .orElseThrow(() -> new RuntimeException("Vantagem não encontrada"));
+
+            // Verificar saldo suficiente
+            if (aluno.getSaldo() < vantagem.getValor()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            // Atualizar saldo do aluno
+            aluno.setSaldo(aluno.getSaldo() - vantagem.getValor());
+            alunoRepository.save(aluno);
+
+            Transacao transacao = new Transacao();
+            transacao.setData(LocalDateTime.now());
+            transacao.setRemetente(aluno);
+            transacao.setDestinatario(aluno);
+            transacao.setInstituicao(aluno.getInstituicao());
+            transacao.setValor(vantagem.getValor());
+            transacao.setMensagem("Resgate: " + vantagem.getTitulo());
+
+            Transacao savedTransacao = transacaoRepository.save(transacao);
+
+            return ResponseEntity.ok(savedTransacao);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

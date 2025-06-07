@@ -165,7 +165,6 @@
         </button>
         <button class="btn-sair" onclick="logout()">Sair</button>
       </div>
-      <div id="mensagem" class="mensagem"></div>
     </div>
 
     <!-- Modal de Depósito Semestral -->
@@ -226,6 +225,7 @@
         >
           Confirmar Transferência
         </button>
+        <div id="mensagem" class="mensagem"></div>
       </div>
     </div>
 
@@ -234,6 +234,41 @@
       <div class="modal-content" style="max-width: 800px">
         <span class="close" onclick="fecharModalExtrato()">&times;</span>
         <h2>Extrato de Transações</h2>
+
+        <div
+          style="
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 10px;
+            "
+          >
+            <span
+              >Total Recebido:
+              <span id="totalRecebido" style="color: green; font-weight: bold"
+                >0</span
+              >
+            </span>
+            <span
+              >Total Transferido:
+              <span id="totalTransferido" style="color: red; font-weight: bold"
+                >0</span
+              >
+            </span>
+          </div>
+          <div style="text-align: right; font-size: 1.1em">
+            Saldo Calculado:
+            <span id="saldoCalculado" style="font-weight: bold">0</span>
+          </div>
+        </div>
+
         <div id="extratoProfessor" style="max-height: 400px; overflow-y: auto">
           <table style="width: 100%; border-collapse: collapse">
             <thead>
@@ -421,7 +456,7 @@
             document.getElementById("saldoProfessor").textContent =
               professor.saldo;
 
-            document.getElementById("btnDepositoSemestre").disabled = false;
+            //document.getElementById("btnDepositoSemestre").disabled = false;
 
             fecharModalDeposito();
             mostrarMensagem(
@@ -440,14 +475,13 @@
 
       async function confirmarTransferencia() {
         const alunoId = document.getElementById("alunoDestino").value;
-        const quantidade = parseInt(
-          document.getElementById("quantidadeMoedas").value
-        );
+        const quantidadeInput =
+          document.getElementById("quantidadeMoedas").value;
+        const quantidade = parseInt(quantidadeInput);
         const mensagem = document.getElementById("mensagemTransferencia").value;
 
-        // Limpar todos os erros
-        document.getElementById("erroQuantidade").textContent = "";
-        document.getElementById("erroMensagem").textContent = "";
+        // Limpar mensagens anteriores
+        document.getElementById("mensagem").style.display = "none";
 
         // Validações
         let valido = true;
@@ -457,38 +491,29 @@
           valido = false;
         }
 
-        if (isNaN(quantidade)) {
-          document.getElementById("erroQuantidade").textContent =
-            "Informe uma quantidade válida";
+        if (!quantidadeInput.trim()) {
+          mostrarMensagem("Informe a quantidade de moedas", "erro");
+          valido = false;
+        } else if (isNaN(quantidade)) {
+          mostrarMensagem("Informe um valor numérico inteiro", "erro");
           valido = false;
         } else if (quantidade <= 0) {
-          document.getElementById("erroQuantidade").textContent =
-            "A quantidade deve ser maior que zero";
+          mostrarMensagem("A quantidade deve ser maior que zero", "erro");
           valido = false;
         } else if (quantidade > professor.saldo) {
-          document.getElementById("erroQuantidade").textContent =
-            "Saldo insuficiente";
+          mostrarMensagem("Saldo insuficiente", "erro");
           valido = false;
         }
 
-        // Validação da mensagem
         if (!mensagem.trim()) {
-          (document.getElementById("erroMensagem").textContent =
-            "Mensagem obrigatória"),
-            "erro";
+          mostrarMensagem("Mensagem obrigatória", "erro");
           valido = false;
         } else if (mensagem.length > 500) {
-          (document.getElementById("erroMensagem").textContent =
-            "Máximo de 500 caracteres"),
-            "erro";
+          mostrarMensagem("Máximo de 500 caracteres", "erro");
           valido = false;
         }
 
         if (!valido) return;
-
-        if (!validarFormularioTransferencia()) {
-          return;
-        }
 
         try {
           const transacaoDTO = {
@@ -509,14 +534,11 @@
 
           if (response.ok) {
             const transacao = await response.json();
-
             professor.saldo -= quantidade;
             localStorage.setItem("usuario", JSON.stringify(professor));
             document.getElementById("saldoProfessor").textContent =
               professor.saldo;
-
             await carregarAlunos();
-
             fecharModalTransferencia();
             mostrarMensagem("Transferência realizada com sucesso!", "sucesso");
           } else {
@@ -525,7 +547,7 @@
           }
         } catch (error) {
           console.error("Erro ao realizar transferência:", error);
-          mostrarMensagem("Erro ao realizar transferência");
+          mostrarMensagem("Erro ao realizar transferência", "erro");
         }
       }
 
@@ -570,6 +592,9 @@
               }
             ),
           ]);
+
+          let totalRecebido = 0;
+          let totalTransferido = 0;
 
           const todasTransacoes = [
             ...comoRemetente,
@@ -617,11 +642,12 @@
             descCell.style.padding = "8px";
 
             if (transacao.remetente.id === transacao.destinatario.id) {
-              // Caso especial: depósito semestral
               tipoCell.textContent = "Depósito Semestral";
               valorCell.textContent = `+${transacao.valor}`;
               valorCell.style.color = "green";
-              descCell.textContent =transacao.mensagem || "Depósito automático";
+              descCell.textContent =
+                transacao.mensagem || "Depósito automático";
+              totalRecebido += transacao.valor;
             } else if (transacao.remetente.id === usuario.id) {
               tipoCell.textContent = "Transferência Enviada";
               valorCell.textContent = `-${transacao.valor} moedas`;
@@ -629,6 +655,15 @@
               descCell.textContent = `Para: ${transacao.destinatario.nome} - ${
                 transacao.mensagem || "Sem descrição"
               }`;
+              totalTransferido += transacao.valor; 
+            } else {
+              tipoCell.textContent = "Transferência Recebida";
+              valorCell.textContent = `+${transacao.valor} moedas`;
+              valorCell.style.color = "green";
+              descCell.textContent = `De: ${transacao.remetente.nome} - ${
+                transacao.mensagem || "Sem descrição"
+              }`;
+              totalRecebido += transacao.valor; 
             }
 
             row.appendChild(dataCell);
@@ -638,6 +673,12 @@
 
             tbody.appendChild(row);
           });
+
+          document.getElementById("totalRecebido").textContent = totalRecebido;
+          document.getElementById("totalTransferido").textContent =
+            totalTransferido;
+          document.getElementById("saldoCalculado").textContent =
+            totalRecebido - totalTransferido;
         } catch (error) {
           console.error("Erro ao carregar extrato:", error);
           alert("Erro ao carregar extrato: " + error.message);

@@ -4,11 +4,18 @@ import com.example.moeda.dto.ProfessorCreateDTO;
 import com.example.moeda.model.departamento.Departamento;
 import com.example.moeda.model.instituicao.Instituicao;
 import com.example.moeda.model.professor.Professor;
+import com.example.moeda.model.transacao.Transacao;
 import com.example.moeda.repository.DepartamentoRepository;
 import com.example.moeda.repository.InstituicaoRepository;
 import com.example.moeda.repository.ProfessorRepository;
+import com.example.moeda.repository.TransacaoRepository;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +27,15 @@ public class ProfessorController {
     private final ProfessorRepository professorRepository;
     private final InstituicaoRepository instituicaoRepository;
     private final DepartamentoRepository departamentoRepository;
+    private final TransacaoRepository transacaoRepository;
 
     public ProfessorController(ProfessorRepository professorRepository,
             InstituicaoRepository instituicaoRepository,
-            DepartamentoRepository departamentoRepository) {
+            DepartamentoRepository departamentoRepository, TransacaoRepository transacaoRepository) {
         this.professorRepository = professorRepository;
         this.instituicaoRepository = instituicaoRepository;
         this.departamentoRepository = departamentoRepository;
+        this.transacaoRepository = transacaoRepository;
     }
 
     @PostMapping
@@ -76,5 +85,25 @@ public class ProfessorController {
     public ResponseEntity<Boolean> verificarCpfExistente(@RequestParam String cpf) {
         boolean existe = professorRepository.existsByCpf(cpf);
         return ResponseEntity.ok(existe);
+    }
+
+    @GetMapping("/extrato/{professorId}")
+    public ResponseEntity<Map<String, Object>> getExtratoProfessor(@PathVariable Long professorId) {
+        Map<String, Object> extrato = new HashMap<>();
+
+        List<Transacao> recebidas = transacaoRepository.findByDestinatarioId(professorId);
+        List<Transacao> enviadas = transacaoRepository.findByRemetenteId(professorId);
+
+        int totalRecebido = recebidas.stream().mapToInt(Transacao::getValor).sum();
+        int totalTransferido = enviadas.stream().mapToInt(Transacao::getValor).sum();
+
+        extrato.put("transacoes", Stream.concat(recebidas.stream(), enviadas.stream())
+                .sorted(Comparator.comparing(Transacao::getData).reversed())
+                .collect(Collectors.toList()));
+        extrato.put("totalRecebido", totalRecebido);
+        extrato.put("totalTransferido", totalTransferido);
+        extrato.put("saldoCalculado", totalRecebido - totalTransferido);
+
+        return ResponseEntity.ok(extrato);
     }
 }
