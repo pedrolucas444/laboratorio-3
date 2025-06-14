@@ -11,6 +11,8 @@ import com.example.moeda.model.vantagem.Vantagem;
 import com.example.moeda.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -37,6 +39,9 @@ public class TransacaoController {
 
     @Autowired
     private VantagemRepository vantagemRepository;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @PostMapping
     public ResponseEntity<Transacao> criarTransacao(@RequestBody TransacaoDTO transacaoDTO) {
@@ -195,6 +200,17 @@ public class TransacaoController {
             transacao.setMensagem("Resgate: " + vantagem.getTitulo());
 
             Transacao savedTransacao = transacaoRepository.save(transacao);
+
+            SimpleMailMessage mensagem = new SimpleMailMessage();
+            mensagem.setTo(aluno.getEmail());
+            mensagem.setSubject("Confirmação de Resgate de Vantagem");
+            mensagem.setText(
+                    "Olá " + aluno.getNome() + ",\n\n" +
+                            "Seu resgate da vantagem \"" + vantagem.getTitulo() + "\" foi confirmado!\n" +
+                            "Valor gasto: " + vantagem.getValor() + " moedas.\n\n" +
+                            "Agradecemos por utilizar nosso sistema!");
+
+            mailSender.send(mensagem);
 
             return ResponseEntity.ok(savedTransacao);
         } catch (Exception e) {
