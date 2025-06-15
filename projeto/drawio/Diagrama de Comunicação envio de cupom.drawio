@@ -22,8 +22,8 @@
             <mxPoint x="440" y="160" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ykpa14ynWp5qWRtfb-Vw-9" value="1. enviarEmailConfirmacao&lt;div&gt;(alunoEmail, alunoNome, vantagemTitulo, vantagemValor);&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="-100" y="230" width="340" height="40" as="geometry" />
+        <mxCell id="ykpa14ynWp5qWRtfb-Vw-9" value="1. enviarEmailConfirmacao&lt;div&gt;(alunoEmail, alunoNome, vantagemTitulo, vantagemValor,cupomCodigo);&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-140" y="230" width="420" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ykpa14ynWp5qWRtfb-Vw-10" value="Aluno" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
           <mxGeometry x="540" y="400" width="30" height="60" as="geometry" />
