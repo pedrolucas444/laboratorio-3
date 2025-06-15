@@ -11,11 +11,13 @@ import com.example.moeda.model.vantagem.Vantagem;
 import com.example.moeda.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,8 +175,30 @@ public class TransacaoController {
         return ResponseEntity.ok(transacoes);
     }
 
+    private void enviarEmailConfirmacao(String email, String nomeAluno, String tituloVantagem, int valor) {
+        try {
+            SimpleMailMessage mensagem = new SimpleMailMessage();
+            mensagem.setFrom("noreply.moedas@gmail.com"); // 👈 Use o mesmo e-mail do username
+            mensagem.setTo(email);
+            mensagem.setSubject("✅ Resgate confirmado: " + tituloVantagem);
+            mensagem.setText(
+                    "Olá " + nomeAluno + ",\n\n" +
+                            "Seu resgate foi realizado com sucesso!\n\n" +
+                            "📌 Vantagem: " + tituloVantagem + "\n" +
+                            "💵 Valor: " + valor + " moedas\n" +
+                            "🕒 Data: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                            + "\n\n" +
+                            "Atenciosamente,\nEquipe de Moedas Virtuais");
+
+            mailSender.send(mensagem);
+            System.out.println("E-mail enviado para: " + email); // Log simples
+        } catch (MailException e) {
+            System.err.println("Falha no envio para " + email + ": " + e.getMessage());
+        }
+    }
+
     @PostMapping("/resgatar-vantagem")
-    public ResponseEntity<Transacao> resgatarVantagem(@RequestBody ResgateVantagemDTO resgateDTO) {
+    public ResponseEntity<?> resgatarVantagem(@RequestBody ResgateVantagemDTO resgateDTO) {
         try {
             Aluno aluno = alunoRepository.findById(resgateDTO.getAlunoId())
                     .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
@@ -182,12 +206,10 @@ public class TransacaoController {
             Vantagem vantagem = vantagemRepository.findById(resgateDTO.getVantagemId())
                     .orElseThrow(() -> new RuntimeException("Vantagem não encontrada"));
 
-            // Verificar saldo suficiente
             if (aluno.getSaldo() < vantagem.getValor()) {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().body("Saldo insuficiente");
             }
 
-            // Atualizar saldo do aluno
             aluno.setSaldo(aluno.getSaldo() - vantagem.getValor());
             alunoRepository.save(aluno);
 
@@ -201,20 +223,15 @@ public class TransacaoController {
 
             Transacao savedTransacao = transacaoRepository.save(transacao);
 
-            SimpleMailMessage mensagem = new SimpleMailMessage();
-            mensagem.setTo(aluno.getEmail());
-            mensagem.setSubject("Confirmação de Resgate de Vantagem");
-            mensagem.setText(
-                    "Olá " + aluno.getNome() + ",\n\n" +
-                            "Seu resgate da vantagem \"" + vantagem.getTitulo() + "\" foi confirmado!\n" +
-                            "Valor gasto: " + vantagem.getValor() + " moedas.\n\n" +
-                            "Agradecemos por utilizar nosso sistema!");
-
-            mailSender.send(mensagem);
+            enviarEmailConfirmacao(
+                    aluno.getEmail(),
+                    aluno.getNome(),
+                    vantagem.getTitulo(),
+                    vantagem.getValor());
 
             return ResponseEntity.ok(savedTransacao);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.internalServerError().body("Erro: " + e.getMessage());
         }
     }
 }

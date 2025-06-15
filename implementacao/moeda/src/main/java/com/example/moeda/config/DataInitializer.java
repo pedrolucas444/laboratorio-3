@@ -45,6 +45,9 @@ public class DataInitializer {
                         Curso ec = cursoRepo.save(new Curso("Engenharia Civil", "EC003", deptEng));
                         Curso adm = cursoRepo.save(new Curso("Administração", "ADM004", deptAdm));
 
+
+                        criarAluno("leo", "leonardovieiramachado@gmail.com", "123456",
+                                        "12345678911", "98456213", "Rua A, 123", uf, cc, alunoRepo);
                         criarAluno("aluno1", "aluno1@gmail.com", "123456",
                                         "11111111111", "12345678", "Rua A, 123", uf, cc, alunoRepo);
                         criarAluno("aluno2", "aluno2@gmail.com", "123456",

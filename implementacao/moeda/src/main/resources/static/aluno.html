@@ -254,17 +254,23 @@
               }),
             });
 
-            if (response.ok) {
-              usuario.saldo -= valor;
-              localStorage.setItem("usuario", JSON.stringify(usuario));
-              document.getElementById("saldo").textContent = usuario.saldo;
+            const data = await response.json();
 
-              alert("Resgate realizado!");
-            } else {
-              alert("Erro no resgate");
+            if (!response.ok) {
+              throw new Error(data.message || "Erro no resgate");
             }
+
+            usuario.saldo -= valor;
+            localStorage.setItem("usuario", JSON.stringify(usuario));
+            document.getElementById("saldo").textContent = usuario.saldo;
+
+            alert(
+              "Resgate realizado com sucesso! Verifique seu e-mail para confirmação."
+            );
+            await carregarVantagens();
           } catch (error) {
             alert("Erro: " + error.message);
+            console.error("Erro no resgate:", error);
           }
         }
       }
