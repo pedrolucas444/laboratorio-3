@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0" version="27.0.6">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0" version="27.1.5">
   <diagram name="Página-1" id="_MupS0U7ZfTYgC9JCSqc">
     <mxGraphModel dx="2245" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -197,7 +197,7 @@
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1364" y="1030" />
-              <mxPoint x="1524" y="1030" />
+              <mxPoint x="1499" y="1030" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -214,6 +214,14 @@
             <Array as="points">
               <mxPoint x="1364" y="1030" />
               <mxPoint x="1410" y="1030" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qd0ykYavXsd7rdFupsQ2-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;startFill=0;" edge="1" parent="1" source="iZ7V8VCyRKmpptAZDByA-225" target="qd0ykYavXsd7rdFupsQ2-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1364" y="1030" />
+              <mxPoint x="1595" y="1030" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -584,7 +592,7 @@
           <mxGeometry x="1366" y="1085" width="88.5" height="35" as="geometry" />
         </mxCell>
         <mxCell id="aawo-7dJE6PNnp-RGfUk-64" value="Destinatário" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1480" y="1085" width="88.5" height="35" as="geometry" />
+          <mxGeometry x="1454.5" y="1085" width="88.5" height="35" as="geometry" />
         </mxCell>
         <mxCell id="aawo-7dJE6PNnp-RGfUk-65" value="Data" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1273.5" y="1085" width="88.5" height="35" as="geometry" />
@@ -600,6 +608,9 @@
         </mxCell>
         <mxCell id="aawo-7dJE6PNnp-RGfUk-76" value="Data de Emissão" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="750" y="857" width="88.5" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="qd0ykYavXsd7rdFupsQ2-5" value="Código" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1550" y="1087.5" width="90" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
