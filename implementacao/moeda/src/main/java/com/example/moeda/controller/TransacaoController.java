@@ -175,10 +175,15 @@ public class TransacaoController {
         return ResponseEntity.ok(transacoes);
     }
 
-    private void enviarEmailConfirmacao(String email, String nomeAluno, String tituloVantagem, int valor) {
+    private String gerarCodigoResgate() {
+    int codigoNumerico = (int) (Math.random() * 90000000) + 10000000;
+    return String.valueOf(codigoNumerico);
+}
+
+    private void enviarEmailConfirmacao(String email, String nomeAluno, String tituloVantagem, int valor, String codigo) {
         try {
             SimpleMailMessage mensagem = new SimpleMailMessage();
-            mensagem.setFrom("noreply.moedas@gmail.com"); // 👈 Use o mesmo e-mail do username
+            mensagem.setFrom("noreply.moedas@gmail.com"); 
             mensagem.setTo(email);
             mensagem.setSubject("✅ Resgate confirmado: " + tituloVantagem);
             mensagem.setText(
@@ -186,6 +191,7 @@ public class TransacaoController {
                             "Seu resgate foi realizado com sucesso!\n\n" +
                             "📌 Vantagem: " + tituloVantagem + "\n" +
                             "💵 Valor: " + valor + " moedas\n" +
+                             "🆔 Código: " + codigo + "\n" +
                             "🕒 Data: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
                             + "\n\n" +
                             "Atenciosamente,\nEquipe de Moedas Virtuais");
@@ -220,14 +226,18 @@ public class TransacaoController {
             transacao.setInstituicao(aluno.getInstituicao());
             transacao.setValor(vantagem.getValor());
             transacao.setMensagem("Resgate: " + vantagem.getTitulo());
-
+            transacao.setCodigo(gerarCodigoResgate());
+            
             Transacao savedTransacao = transacaoRepository.save(transacao);
 
             enviarEmailConfirmacao(
                     aluno.getEmail(),
                     aluno.getNome(),
                     vantagem.getTitulo(),
-                    vantagem.getValor());
+                    vantagem.getValor(),
+                    savedTransacao.getCodigo()
+                    );
+                    
 
             return ResponseEntity.ok(savedTransacao);
         } catch (Exception e) {

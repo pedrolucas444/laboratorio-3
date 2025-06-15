@@ -37,6 +37,9 @@ public class Transacao {
     @Column
     private String mensagem;
 
+    @Column(nullable = true, length = 8)
+    private String codigo;
+
     // Getters e Setters
     public Long getId() {
         return id;
@@ -92,5 +95,13 @@ public class Transacao {
 
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 }
