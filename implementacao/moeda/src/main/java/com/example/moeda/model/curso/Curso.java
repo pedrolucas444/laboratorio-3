@@ -11,20 +11,21 @@ public class Curso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private String nome;
-    
+
     @Column(nullable = false)
     private String codigo;
-    
+
     @ManyToOne
     @JoinColumn(name = "departamento_id", nullable = false)
-    @JsonIgnoreProperties("cursos") 
+    @JsonIgnoreProperties("cursos")
     private Departamento departamento;
 
     // Construtores
-    public Curso() {}
+    public Curso() {
+    }
 
     public Curso(String nome, String codigo, Departamento departamento) {
         this.nome = nome;

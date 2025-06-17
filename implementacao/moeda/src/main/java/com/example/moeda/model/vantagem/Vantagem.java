@@ -1,12 +1,18 @@
 package com.example.moeda.model.vantagem;
 
 import com.example.moeda.model.empresa.Empresa;
-import jakarta.persistence.*;
-import java.util.List;
 import com.example.moeda.model.aluno.Aluno;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import java.util.List;
 
 @Entity
 @Table(name = "vantagens")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Vantagem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,61 +36,4 @@ public class Vantagem {
 
     @ManyToMany(mappedBy = "vantagens")
     private List<Aluno> alunos;
-
-    // Getters e Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public int getValor() {
-        return valor;
-    }
-
-    public void setValor(int valor) {
-        this.valor = valor;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public List<Aluno> getAlunos() {
-        return alunos;
-    }
-
-    public void setAlunos(List<Aluno> alunos) {
-        this.alunos = alunos;
-    }
-
-    public String getImagemUrl() {
-        return imagemUrl;
-    }
-
-    public void setImagemUrl(String imagemUrl) {
-        this.imagemUrl = imagemUrl;
-    }
 }

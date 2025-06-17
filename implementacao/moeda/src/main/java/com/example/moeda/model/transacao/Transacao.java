@@ -1,13 +1,20 @@
 package com.example.moeda.model.transacao;
 
 import com.example.moeda.model.pessoa.Pessoa;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.example.moeda.model.instituicao.Instituicao;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transacao")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Transacao {
 
     @Id
@@ -19,12 +26,12 @@ public class Transacao {
 
     @ManyToOne
     @JoinColumn(name = "remetente_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Pessoa remetente;
 
     @ManyToOne
     @JoinColumn(name = "destinatario_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Pessoa destinatario;
 
     @ManyToOne
@@ -39,69 +46,4 @@ public class Transacao {
 
     @Column(nullable = true, length = 8)
     private String codigo;
-
-    // Getters e Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getData() {
-        return data;
-    }
-
-    public void setData(LocalDateTime data) {
-        this.data = data;
-    }
-
-    public Pessoa getRemetente() {
-        return remetente;
-    }
-
-    public void setRemetente(Pessoa remetente) {
-        this.remetente = remetente;
-    }
-
-    public Pessoa getDestinatario() {
-        return destinatario;
-    }
-
-    public void setDestinatario(Pessoa destinatario) {
-        this.destinatario = destinatario;
-    }
-
-    public Instituicao getInstituicao() {
-        return instituicao;
-    }
-
-    public void setInstituicao(Instituicao instituicao) {
-        this.instituicao = instituicao;
-    }
-
-    public int getValor() {
-        return valor;
-    }
-
-    public void setValor(int valor) {
-        this.valor = valor;
-    }
-
-    public String getMensagem() {
-        return mensagem;
-    }
-
-    public void setMensagem(String mensagem) {
-        this.mensagem = mensagem;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
 }
